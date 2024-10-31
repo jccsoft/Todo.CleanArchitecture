@@ -1,11 +1,11 @@
-﻿namespace Todo.Application.TodoItems.Create;
+﻿namespace Todo.Application.TodoItems.Add;
 
-internal sealed class CreateTodoItemCommandHandler(
+internal sealed class AddTodoItemCommandHandler(
     ITodoItemsRepository todoItemsRepository,
     IUnitOfWork unitOfWork,
-    IDateTimeProvider dateTimeProvider) : ICommandHandler<CreateTodoItemCommand, Guid>
+    IDateTimeProvider dateTimeProvider) : ICommandHandler<AddTodoItemCommand, Guid>
 {
-    public async Task<Result<Guid>> Handle(CreateTodoItemCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(AddTodoItemCommand request, CancellationToken cancellationToken)
     {
         var title = new TodoItemTitle(request.Title);
         var todoItem = TodoItem.Create(title, dateTimeProvider.UtcNow);

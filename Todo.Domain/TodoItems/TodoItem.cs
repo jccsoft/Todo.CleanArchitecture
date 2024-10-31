@@ -26,7 +26,7 @@ public sealed class TodoItem : Entity
         return todo;
     }
 
-    public Result MarkAsCompleted(DateTime utcNow)
+    public Result Complete(DateTime utcNow)
     {
         if (IsCompleted) return Result.Failure(TodoItemsDomainErrors.AlreadyCompleted);
 
@@ -34,18 +34,6 @@ public sealed class TodoItem : Entity
         IsCompleted = true;
 
         Raise(new TodoItemCompletedDomainEvent(Id));
-
-        return Result.Success();
-    }
-
-    public Result MarkAsNotCompleted()
-    {
-        if (IsCompleted == false) return Result.Failure(TodoItemsDomainErrors.NotCompleted);
-
-        CompletedOnUtc = null;
-        IsCompleted = false;
-
-        Raise(new TodoItemNotCompletedDomainEvent(Id));
 
         return Result.Success();
     }

@@ -24,8 +24,8 @@ public class ConfigureSwaggerGenOptions(IApiVersionDescriptionProvider provider)
     {
         var openApiInfo = new OpenApiInfo
         {
-            Title = $"RunTrackr.Api v{apiVersionDescription.ApiVersion}",
-            Version = apiVersionDescription.ApiVersion.ToString()
+            Title = $"Todo.CleanArchitecture.Api v{apiVersionDescription.ApiVersion}",
+            Version = apiVersionDescription.ApiVersion.ToString(),
         };
 
         if (apiVersionDescription.IsDeprecated)

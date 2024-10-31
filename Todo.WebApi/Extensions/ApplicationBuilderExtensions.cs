@@ -18,6 +18,8 @@ public static class ApplicationBuilderExtensions
 
                 options.SwaggerEndpoint(url, name);
             }
+
+            options.DefaultModelsExpandDepth(0); // schemas section collapsed
         });
 
         return app;

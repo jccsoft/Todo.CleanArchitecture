@@ -39,7 +39,7 @@ public class TodoItemsTests : BaseTest
         var todoItem = TodoItem.Create(TodoItemData.Title, TodoItemData.CreatedOnUtc);
 
         // Act
-        todoItem.MarkAsCompleted(TodoItemData.CompletedOnUtc);
+        todoItem.Complete(TodoItemData.CompletedOnUtc);
 
         // Assert
         todoItem.CompletedOnUtc.Should().Be(TodoItemData.CompletedOnUtc);
@@ -53,7 +53,7 @@ public class TodoItemsTests : BaseTest
         var todoItem = TodoItem.Create(TodoItemData.Title, TodoItemData.CreatedOnUtc);
 
         // Act
-        todoItem.MarkAsCompleted(TodoItemData.CompletedOnUtc);
+        todoItem.Complete(TodoItemData.CompletedOnUtc);
 
         // Assert
         var todoItemCompletedDomainEvent = AssertDomainEventWasPublished<TodoItemCompletedDomainEvent>(todoItem);
@@ -66,7 +66,7 @@ public class TodoItemsTests : BaseTest
     {
         // Arrange
         var todoItem = TodoItem.Create(TodoItemData.Title, TodoItemData.CreatedOnUtc);
-        todoItem.MarkAsCompleted(TodoItemData.CompletedOnUtc);
+        todoItem.Complete(TodoItemData.CompletedOnUtc);
 
         // Act
         todoItem.MarkAsNotCompleted();
@@ -81,7 +81,7 @@ public class TodoItemsTests : BaseTest
     {
         // Arrange
         var todoItem = TodoItem.Create(TodoItemData.Title, TodoItemData.CreatedOnUtc);
-        todoItem.MarkAsCompleted(TodoItemData.CompletedOnUtc);
+        todoItem.Complete(TodoItemData.CompletedOnUtc);
 
         // Act
         todoItem.MarkAsNotCompleted();

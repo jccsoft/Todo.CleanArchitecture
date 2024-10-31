@@ -2,5 +2,5 @@
 
 internal static class Tags
 {
-    public const string TodoItems = "TodoItems";
+    public const string TodoItems = "Todo Items";
 }

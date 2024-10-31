@@ -1,22 +1,23 @@
-﻿using Todo.Application.TodoItems.Create;
+﻿using Todo.Application.TodoItems.Add;
 
 namespace Todo.WebApi.Endpoints.TodoItems;
 
-public class CreateTodoItem : IEndpoint
+public class AddTodoItem : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost(BaseUrls.TodoItems, async (
-            CreateTodoItemRequest request,
+            AddTodoItemRequest request,
             ISender sender,
             CancellationToken cancellationToken) =>
         {
-            var command = new CreateTodoItemCommand(request.Title);
+            var command = new AddTodoItemCommand(request.Title);
 
             Result<Guid> result = await sender.Send(command, cancellationToken);
 
             return result.Match(Results.Ok, CustomResults.Problem);
         })
-        .WithTags(Tags.TodoItems);
+        .WithTags(Tags.TodoItems)
+        .WithSummary("Add");
     }
 }

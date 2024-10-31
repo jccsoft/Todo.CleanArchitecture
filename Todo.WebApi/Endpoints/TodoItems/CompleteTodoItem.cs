@@ -1,22 +1,23 @@
-﻿using Todo.Application.TodoItems.Update;
+﻿using Todo.Application.TodoItems.Complete;
 
 namespace Todo.WebApi.Endpoints.TodoItems;
 
-public class UpdateTodoItem : IEndpoint
+public class CompleteTodoItem : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPut(BaseUrls.TodoItems, async (
-            UpdateTodoItemRequest request,
+            Guid todoItemId,
             ISender sender,
             CancellationToken cancellationToken) =>
         {
-            var command = new UpdateTodoItemCommand(request.Id, request.Title, request.IsCompleted);
+            var command = new CompleteTodoItemCommand(todoItemId);
 
             Result result = await sender.Send(command, cancellationToken);
 
             return result;
         })
-        .WithTags(Tags.TodoItems);
+        .WithTags(Tags.TodoItems)
+        .WithSummary("Complete");
     }
 }

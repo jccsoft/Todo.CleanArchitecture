@@ -17,6 +17,7 @@ public class DeleteTodoItem : IEndpoint
 
             return result;
         })
-        .WithTags(Tags.TodoItems);
+        .WithTags(Tags.TodoItems)
+        .WithSummary("Delete");
     }
 }
