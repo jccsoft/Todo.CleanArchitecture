@@ -17,4 +17,7 @@
     <ProjectReference Include="..\Todo.Domain\Todo.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Todo.Application.UnitTests" />
+  </ItemGroup>
 </Project>

@@ -13,7 +13,8 @@ internal sealed class AddTodoItemCommandHandler(
         int affectedRows = await todoItemsRepository.AddAsync(todoItem, cancellationToken);
         if (affectedRows == 0) return Result.Failure<Guid>(TodoItemsDomainErrors.NoRowsAffected);
 
-        await unitOfWork.SaveChangesAsync([todoItem], cancellationToken);
+        int saveChangesResult = await unitOfWork.SaveChangesAsync([todoItem], cancellationToken);
+        if (saveChangesResult == 0) return Result.Failure<Guid>(TodoItemsDomainErrors.NoRowsAffected);
 
         return todoItem.Id;
     }

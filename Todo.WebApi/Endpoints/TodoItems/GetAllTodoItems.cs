@@ -2,7 +2,7 @@
 
 namespace Todo.WebApi.Endpoints.TodoItems;
 
-public class GetAllTodoItems(ILogger<GetAllTodoItems> logger) : IEndpoint
+public class GetAllTodoItems() : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
@@ -11,7 +11,7 @@ public class GetAllTodoItems(ILogger<GetAllTodoItems> logger) : IEndpoint
             ISender sender,
             CancellationToken cancellationToken) =>
         {
-            var query = new GetTodoItemsQuery(includeCompleted);
+            var query = new GetAllTodoItemsQuery(includeCompleted);
 
             Result<List<TodoItemResponse>> result = await sender.Send(query, cancellationToken);
 

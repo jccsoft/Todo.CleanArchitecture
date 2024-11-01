@@ -35,13 +35,13 @@ internal sealed class UnitOfWork : IUnitOfWork
             _dbTransaction.Commit();
             _dbTransaction = _dbConnection.BeginTransaction();
 
-            return 1;// Task.FromResult(1);
+            return 1;
         }
         catch
         {
             _dbTransaction.Rollback();
 
-            return 0; // Task.FromResult(0);
+            return 0;
         }
     }
 

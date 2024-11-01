@@ -1,14 +1,12 @@
 ﻿namespace Todo.Application.TodoItems.GetAll;
 
-internal class GetTodoItemsQueryHandler(
+internal class GetAllTodoItemsQueryHandler(
     ITodoItemsRepository todoItemsRepository)
-    : IQueryHandler<GetTodoItemsQuery, List<TodoItemResponse>>
+    : IQueryHandler<GetAllTodoItemsQuery, List<TodoItemResponse>>
 {
-    public async Task<Result<List<TodoItemResponse>>> Handle(GetTodoItemsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<TodoItemResponse>>> Handle(GetAllTodoItemsQuery request, CancellationToken cancellationToken)
     {
         var todoItems = await todoItemsRepository.GetAllAsync(request.IncludeCompleted, cancellationToken);
-
-        if (todoItems is null) return new List<TodoItemResponse>();
 
         var output = todoItems.Select(item => new TodoItemResponse(
             item.Id,

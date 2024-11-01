@@ -33,7 +33,20 @@ public class TodoItemsTests : BaseTest
     }
 
     [Fact]
-    public void MarkAsCompleted_Should_SetPropertyValues()
+    public void Complete_Should_ReturnSuccess_WhenTodoItemIsCompleted()
+    {
+        // Arrange
+        var todoItem = TodoItem.Create(TodoItemData.Title, TodoItemData.CreatedOnUtc);
+
+        // Act
+        var result = todoItem.Complete(TodoItemData.CompletedOnUtc);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Complete_Should_SetPropertyValues()
     {
         // Arrange
         var todoItem = TodoItem.Create(TodoItemData.Title, TodoItemData.CreatedOnUtc);
@@ -47,7 +60,7 @@ public class TodoItemsTests : BaseTest
     }
 
     [Fact]
-    public void MarkAsCompleted_Should_RaiseTodoItemCompletedDomainEvent()
+    public void Complete_Should_RaiseTodoItemCompletedDomainEvent()
     {
         // Arrange
         var todoItem = TodoItem.Create(TodoItemData.Title, TodoItemData.CreatedOnUtc);
@@ -62,33 +75,16 @@ public class TodoItemsTests : BaseTest
     }
 
     [Fact]
-    public void MarkAsNotCompleted_Should_SetPropertyValues()
+    public void Complete_Should_ReturnFailure_WhenTodoItemAlreadyCompleted()
     {
         // Arrange
         var todoItem = TodoItem.Create(TodoItemData.Title, TodoItemData.CreatedOnUtc);
         todoItem.Complete(TodoItemData.CompletedOnUtc);
 
         // Act
-        todoItem.MarkAsNotCompleted();
+        var result = todoItem.Complete(TodoItemData.CompletedOnUtc);
 
         // Assert
-        todoItem.CompletedOnUtc.Should().Be(null);
-        todoItem.IsCompleted.Should().Be(false);
-    }
-
-    [Fact]
-    public void MarkAsNotCompleted_Should_RaiseTodoItemCompletedDomainEvent()
-    {
-        // Arrange
-        var todoItem = TodoItem.Create(TodoItemData.Title, TodoItemData.CreatedOnUtc);
-        todoItem.Complete(TodoItemData.CompletedOnUtc);
-
-        // Act
-        todoItem.MarkAsNotCompleted();
-
-        // Assert
-        var todoItemNotCompletedDomainEvent = AssertDomainEventWasPublished<TodoItemNotCompletedDomainEvent>(todoItem);
-
-        todoItemNotCompletedDomainEvent.TodoId.Should().Be(todoItem.Id);
+        result.IsFailure.Should().BeTrue();
     }
 }

@@ -2,10 +2,6 @@ using Asp.Versioning;
 using Asp.Versioning.Builder;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-
-
-//using HealthChecks.UI.Client;
-//using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
 using System.Reflection;
 
@@ -65,11 +61,10 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-//// REMARK: If you want to use Controllers, you'll need this.
 //app.MapControllers();
 
 await app.RunAsync();
 
 
-// REMARK: Required for functional and integration tests to work.
+// Required for functional and integration tests to work.
 public partial class Program;
