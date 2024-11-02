@@ -4,7 +4,7 @@ public sealed record TodoItemTitle
 {
     public TodoItemTitle(string? title)
     {
-        Ensure.NotNullOrEmpty(title, nameof(title));
+        Ensure.NotNullOrEmpty(title, nameof(TodoItemTitle));
 
         Value = title;
     }

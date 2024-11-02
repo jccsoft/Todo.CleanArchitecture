@@ -20,7 +20,7 @@ internal sealed class AddTodoItemCommandHandler(
 
             return todoItem.Id;
         }
-        catch (ArgumentNullException ex) when (ex.ParamName is not null && ex.ParamName.Equals("title"))
+        catch (ArgumentNullException ex) when ((ex.ParamName ?? "").Equals(nameof(TodoItemTitle)))
         {
             return Result.Failure<Guid>(TodoItemsDomainErrors.MissingTitle);
         }
