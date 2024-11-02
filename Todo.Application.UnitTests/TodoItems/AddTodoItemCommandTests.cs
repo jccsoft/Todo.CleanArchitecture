@@ -49,6 +49,20 @@ public class AddTodoItemCommandTests
     }
 
     [Fact]
+    public async Task Handle_Should_ReturnFailure_WhenTitleEmpty()
+    {
+        // Arrange
+        var emptyCommand = new AddTodoItemCommand("");
+
+        // Act
+        var result = await _handler.Handle(emptyCommand, default);
+
+        // Assert
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Be(TodoItemsDomainErrors.MissingTitle);
+    }
+
+    [Fact]
     public async Task Handle_Should_ReturnFailure_WhenRepositoryFails()
     {
         // Arrange

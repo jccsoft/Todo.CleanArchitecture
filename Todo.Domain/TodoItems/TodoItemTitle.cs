@@ -2,11 +2,11 @@
 
 public sealed record TodoItemTitle
 {
-    public TodoItemTitle(string? value)
+    public TodoItemTitle(string? title)
     {
-        Ensure.NotNullOrEmpty(value, nameof(value));
+        Ensure.NotNullOrEmpty(title, nameof(title));
 
-        Value = value;
+        Value = title;
     }
 
     public string Value { get; }

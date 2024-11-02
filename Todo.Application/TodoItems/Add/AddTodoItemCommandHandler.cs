@@ -7,15 +7,26 @@ internal sealed class AddTodoItemCommandHandler(
 {
     public async Task<Result<Guid>> Handle(AddTodoItemCommand request, CancellationToken cancellationToken)
     {
-        var title = new TodoItemTitle(request.Title);
-        var todoItem = TodoItem.Create(title, dateTimeProvider.UtcNow);
+        try
+        {
+            var title = new TodoItemTitle(request.Title);
+            var todoItem = TodoItem.Create(title, dateTimeProvider.UtcNow);
 
-        int affectedRows = await todoItemsRepository.AddAsync(todoItem, cancellationToken);
-        if (affectedRows == 0) return Result.Failure<Guid>(TodoItemsDomainErrors.NoRowsAffected);
+            int affectedRows = await todoItemsRepository.AddAsync(todoItem, cancellationToken);
+            if (affectedRows == 0) return Result.Failure<Guid>(TodoItemsDomainErrors.NoRowsAffected);
 
-        int saveChangesResult = await unitOfWork.SaveChangesAsync([todoItem], cancellationToken);
-        if (saveChangesResult == 0) return Result.Failure<Guid>(TodoItemsDomainErrors.NoRowsAffected);
+            int saveChangesResult = await unitOfWork.SaveChangesAsync([todoItem], cancellationToken);
+            if (saveChangesResult == 0) return Result.Failure<Guid>(TodoItemsDomainErrors.NoRowsAffected);
 
-        return todoItem.Id;
+            return todoItem.Id;
+        }
+        catch (ArgumentNullException ex) when (ex.ParamName is not null && ex.ParamName.Equals("title"))
+        {
+            return Result.Failure<Guid>(TodoItemsDomainErrors.MissingTitle);
+        }
+        catch (Exception)
+        {
+            return Result.Failure<Guid>(TodoItemsDomainErrors.UnknownError);
+        }
     }
 }
