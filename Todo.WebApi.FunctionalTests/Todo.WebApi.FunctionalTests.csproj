@@ -35,18 +35,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="SqlScripts.Designer.cs">
-      <DependentUpon>SqlScripts.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="SqlScripts.resx">
-      <LastGenOutput>SqlScripts.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
+    <None Update="init-db.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

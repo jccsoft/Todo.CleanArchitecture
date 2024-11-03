@@ -17,6 +17,7 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
         .WithImage("mysql:8.0")
         .WithDatabase("tododb")
         .WithEnvironment("MYSQL_ROOT_PASSWORD", "my-secret-pw")
+        .WithResourceMapping(new FileInfo("./init-db.sql"), "/docker-entrypoint-initdb.d/")
         .Build();
 
     private readonly RedisContainer _redisContainer = new RedisBuilder()
@@ -39,8 +40,6 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
-        await _dbContainer.ExecScriptAsync(SqlScripts.InitDb);
-
         await _redisContainer.StartAsync();
     }
 
