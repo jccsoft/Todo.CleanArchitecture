@@ -23,7 +23,7 @@ public class CompleteTodoItemTests(IntegrationTestWebAppFactory factory) : BaseI
     }
 
     [Fact]
-    public async Task Handle_Should_ReturnFailure_WhenTodoItemNotFoundInDatabase()
+    public async Task Handle_Should_ReturnFailure_WhenTodoItemNotExistsInDatabase()
     {
         // Arrange
         CompleteTodoItemCommand command = new(Guid.NewGuid());

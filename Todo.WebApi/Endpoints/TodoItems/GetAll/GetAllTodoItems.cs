@@ -1,6 +1,6 @@
 ﻿using Todo.Application.TodoItems.GetAll;
 
-namespace Todo.WebApi.Endpoints.TodoItems;
+namespace Todo.WebApi.Endpoints.TodoItems.GetAll;
 
 public class GetAllTodoItems() : IEndpoint
 {

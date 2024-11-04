@@ -1,6 +1,6 @@
 ﻿using Todo.Application.TodoItems.Add;
 
-namespace Todo.WebApi.Endpoints.TodoItems;
+namespace Todo.WebApi.Endpoints.TodoItems.Add;
 
 public class AddTodoItem : IEndpoint
 {

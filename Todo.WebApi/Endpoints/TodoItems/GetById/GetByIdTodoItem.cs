@@ -1,17 +1,17 @@
 ﻿using Todo.Application.TodoItems.GetById;
 
-namespace Todo.WebApi.Endpoints.TodoItems;
+namespace Todo.WebApi.Endpoints.TodoItems.GetById;
 
 public class GetByIdTodoItem : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet($"{BaseUrls.TodoItems}/{"todoItemId"}", async (
-            Guid todoItemId,
+        app.MapGet($"{BaseUrls.TodoItems}/{{id}}", async (
+            Guid id,
             ISender sender,
             CancellationToken cancellationToken) =>
         {
-            var query = new GetTodoItemByIdQuery(todoItemId);
+            var query = new GetTodoItemByIdQuery(id);
 
             Result<TodoItemResponse> result = await sender.Send(query, cancellationToken);
 
