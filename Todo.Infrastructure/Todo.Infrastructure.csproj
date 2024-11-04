@@ -25,6 +25,7 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Todo.Application.IntegrationTests" />
     <InternalsVisibleTo Include="Todo.WebApi.FunctionalTests" />
+    <InternalsVisibleTo Include="Todo.ArchitectureTests" />
   </ItemGroup>
   
 </Project>
