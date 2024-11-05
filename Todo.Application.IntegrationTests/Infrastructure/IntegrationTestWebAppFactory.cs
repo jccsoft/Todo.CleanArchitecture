@@ -8,6 +8,7 @@ using Testcontainers.MySql;
 using Testcontainers.Redis;
 using Todo.Application.Abstractions.Data;
 using Todo.Infrastructure.Database;
+using Todo.Infrastructure.Setup;
 
 namespace Todo.Application.IntegrationTests.Infrastructure;
 
@@ -20,9 +21,8 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
         .WithResourceMapping(new FileInfo("./init-db.sql"), "/docker-entrypoint-initdb.d/")
         .Build();
 
-    private readonly RedisContainer _redisContainer = new RedisBuilder()
-        .WithImage("redis:latest")
-        .Build();
+    private RedisContainer? _redisContainer;
+
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -32,21 +32,34 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
             services.RemoveAll(typeof(IDbConnectionFactory));
             services.AddScoped<IDbConnectionFactory>(_ => new DbConnectionFactory(_dbContainer.GetConnectionString()));
 
-            services.RemoveAll(typeof(RedisCacheOptions));
-            services.AddStackExchangeRedisCache(redisCacheOptions =>
-                redisCacheOptions.Configuration = _redisContainer.GetConnectionString());
+            if (_redisContainer is not null)
+            {
+                services.RemoveAll(typeof(RedisCacheOptions));
+                services.AddStackExchangeRedisCache(redisCacheOptions =>
+                    redisCacheOptions.Configuration = _redisContainer.GetConnectionString());
+            }
         });
     }
 
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
-        await _redisContainer.StartAsync();
+
+        if (Config.CacheType == CacheTypes.Redis)
+        {
+            _redisContainer = new RedisBuilder()
+                .WithImage("redis:latest")
+                .Build();
+
+            await _redisContainer.StartAsync();
+        }
     }
 
     public new async Task DisposeAsync()
     {
         await _dbContainer.StopAsync();
-        await _redisContainer.StopAsync();
+
+        if (_redisContainer is not null)
+            await _redisContainer.StopAsync();
     }
 }

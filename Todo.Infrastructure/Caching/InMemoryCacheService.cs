@@ -1,17 +1,18 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using System.Buffers;
 using System.Text.Json;
 using Todo.Application.Abstractions.Caching;
 
 namespace Todo.Infrastructure.Caching;
 
-internal sealed class CacheService(IDistributedCache cache) : ICacheService
+internal sealed class InMemoryCacheService(IMemoryCache cache) : ICacheService
 {
-    public async Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default)
+    public Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default)
     {
-        byte[]? bytes = await cache.GetAsync(key, cancellationToken);
+        cache.TryGetValue(key, out byte[]? bytes);
 
-        return bytes is null ? default : Deserialize<T>(bytes);
+        return Task.FromResult(bytes is null ? default : Deserialize<T>(bytes));
     }
 
     public Task SetAsync<T>(
@@ -21,12 +22,17 @@ internal sealed class CacheService(IDistributedCache cache) : ICacheService
         CancellationToken cancellationToken = default)
     {
         byte[] bytes = Serialize(value);
+        cache.Set(key, bytes, expiration ?? CacheOptions.DefaultAbsoluteExpirationRelativeToNow);
 
-        return cache.SetAsync(key, bytes, CacheOptions.Create(expiration), cancellationToken);
+        return Task.CompletedTask;
     }
 
-    public Task RemoveAsync(string key, CancellationToken cancellationToken = default) =>
-        cache.RemoveAsync(key, cancellationToken);
+    public Task RemoveAsync(string key, CancellationToken cancellationToken = default)
+    {
+        cache.Remove(key);
+
+        return Task.CompletedTask;
+    }
 
     private static T Deserialize<T>(byte[] bytes)
     {

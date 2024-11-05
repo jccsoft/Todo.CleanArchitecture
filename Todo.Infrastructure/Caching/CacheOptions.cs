@@ -4,9 +4,11 @@ namespace Todo.Infrastructure.Caching;
 
 public static class CacheOptions
 {
+    public static TimeSpan DefaultAbsoluteExpirationRelativeToNow { get; } = TimeSpan.FromSeconds(10);
+
     public static DistributedCacheEntryOptions DefaultExpiration => new()
     {
-        AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(10)
+        AbsoluteExpirationRelativeToNow = DefaultAbsoluteExpirationRelativeToNow
     };
 
     public static DistributedCacheEntryOptions Create(TimeSpan? expiration) =>
