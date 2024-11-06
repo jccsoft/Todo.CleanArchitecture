@@ -11,7 +11,6 @@ internal class GetAllTodoItemsQueryHandler(
         var output = todoItems.Select(item => new TodoItemResponse(
             item.Id,
             item.Title!.Value,
-            item.IsCompleted,
             item.CreatedOnUtc,
             item.CompletedOnUtc)).ToList();
 

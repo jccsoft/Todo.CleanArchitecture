@@ -1,6 +1,6 @@
 ﻿namespace Todo.Infrastructure.Setup;
 
-internal enum CacheTypes
+public enum CacheTypes
 {
     InMemory,
     Redis

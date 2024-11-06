@@ -5,7 +5,8 @@ VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db", "db", "{C857A05A-B7F2-4135-852C-1B3473B79815}"
 	ProjectSection(SolutionItems) = preProject
-		init-db.sql = init-db.sql
+		init-mysql.sql = init-mysql.sql
+		init-postgres.sql = init-postgres.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{14D6F5D1-C11C-4DFF-A8E2-3C6CB8ADF302}"
@@ -32,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Application.Integratio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.WebApi.FunctionalTests", "Todo.WebApi.FunctionalTests\Todo.WebApi.FunctionalTests.csproj", "{D59ADA07-7B3B-4D81-A679-9AA939E23D7D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.ArchitectureTests", "..\Todo.ArchitectureTests\Todo.ArchitectureTests.csproj", "{A1363BD3-51B9-41C4-BFD5-7262C5DE6DFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.ArchitectureTests", "..\Todo.ArchitectureTests\Todo.ArchitectureTests.csproj", "{A1363BD3-51B9-41C4-BFD5-7262C5DE6DFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -17,7 +17,6 @@ public class TodoItemsTests : BaseTest
         todoItem.CreatedOnUtc.Should().Be(TodoItemData.CreatedOnUtc);
         todoItem.Id.Should().NotBeEmpty();
         todoItem.CompletedOnUtc.Should().Be(null);
-        todoItem.IsCompleted.Should().Be(false);
     }
 
     [Fact]
@@ -55,8 +54,8 @@ public class TodoItemsTests : BaseTest
         todoItem.Complete(TodoItemData.CompletedOnUtc);
 
         // Assert
+        todoItem.CompletedOnUtc.Should().NotBeNull();
         todoItem.CompletedOnUtc.Should().Be(TodoItemData.CompletedOnUtc);
-        todoItem.IsCompleted.Should().Be(true);
     }
 
     [Fact]

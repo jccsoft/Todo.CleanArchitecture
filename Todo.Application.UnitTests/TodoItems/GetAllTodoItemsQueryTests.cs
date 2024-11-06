@@ -42,7 +42,6 @@ public class GetAllTodoItemsQueryTests
         {
             result.Value[i].Id.Should().Be(_todoItems[i].Id);
             result.Value[i].Title.Should().Be(_todoItems[i].Title!.Value);
-            result.Value[i].IsCompleted.Should().Be(_todoItems[i].IsCompleted);
             result.Value[i].CreatedOnUtc.Should().Be(_todoItems[i].CreatedOnUtc);
             result.Value[i].CompletedOnUtc.Should().Be(_todoItems[i].CompletedOnUtc);
         }

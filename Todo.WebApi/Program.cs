@@ -4,6 +4,7 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
 using System.Reflection;
+using Todo.Infrastructure.Setup;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,7 @@ builder.Services
     .AddApplication()
     .AddPresentation()
     .AddInfrastructure(builder.Configuration,
-                       databaseConfigKey: "MySql",
+                       databaseConfigKey: Config.DatabaseType.ToString(),
                        cacheConfigKey: "Cache",
                        outboxConfigKey: "Outbox");
 

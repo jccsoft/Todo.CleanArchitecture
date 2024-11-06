@@ -19,6 +19,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.10" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="Testcontainers.MySql" Version="4.0.0" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.0.0" />
     <PackageReference Include="Testcontainers.Redis" Version="4.0.0" />
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
@@ -36,7 +37,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="init-db.sql">
+    <None Update="init-mysql.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="init-postgres.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

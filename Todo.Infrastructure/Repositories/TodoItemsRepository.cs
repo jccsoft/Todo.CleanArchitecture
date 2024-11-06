@@ -13,11 +13,9 @@ internal sealed class TodoItemsRepository(IDbConnectionFactory dbConnectionFacto
     {
         try
         {
-            const string sql = """
-            SELECT Id, Title, IsCompleted, CreatedOnUtc, CompletedOnUtc
-            FROM todoitems
-            WHERE IsCompleted = 0 or IsCompleted = @IsCompleted
-            """;
+            string sql = "SELECT Id, Title, CreatedOnUtc, CompletedOnUtc FROM todoitems";
+
+            if (includeCompleted == false) sql += " WHERE CompletedOnUtc is null";
 
             var todoItems = await _dbConnection.QueryAsync<TodoItem>(
                 sql,
@@ -40,9 +38,9 @@ internal sealed class TodoItemsRepository(IDbConnectionFactory dbConnectionFacto
         try
         {
             const string sql = """
-            SELECT Id, Title, IsCompleted, CreatedOnUtc, CompletedOnUtc
-            FROM todoitems
-            WHERE Id = @Id
+                SELECT Id, Title, CreatedOnUtc, CompletedOnUtc
+                FROM todoitems
+                WHERE Id = @Id
             """;
 
             var todo = await _dbConnection.QueryFirstOrDefaultAsync<TodoItem>(
@@ -95,12 +93,11 @@ internal sealed class TodoItemsRepository(IDbConnectionFactory dbConnectionFacto
         try
         {
             const string sql = """
-            UPDATE todoitems
-            SET 
-                Title = @Title,
-                IsCompleted = @IsCompleted,
-                CompletedOnUtc = @CompletedOnUtc
-            WHERE Id = @Id
+                UPDATE todoitems
+                SET 
+                    Title = @Title,
+                    CompletedOnUtc = @CompletedOnUtc
+                WHERE Id = @Id
             """;
 
             int affectedRows = await _dbConnection.ExecuteAsync(
@@ -108,7 +105,6 @@ internal sealed class TodoItemsRepository(IDbConnectionFactory dbConnectionFacto
                 new
                 {
                     Title = item.Title!.Value,
-                    IsCompleted = item.IsCompleted ? 1 : 0,
                     item.CompletedOnUtc,
                     item.Id,
                 },
@@ -128,8 +124,8 @@ internal sealed class TodoItemsRepository(IDbConnectionFactory dbConnectionFacto
         try
         {
             const string sql = """
-            DELETE FROM todoitems
-            WHERE Id = @Id
+                DELETE FROM todoitems
+                WHERE Id = @Id
             """;
 
             int affectedRows = await _dbConnection.ExecuteAsync(

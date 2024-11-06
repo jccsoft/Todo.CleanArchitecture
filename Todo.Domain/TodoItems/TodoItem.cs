@@ -3,7 +3,6 @@
 public sealed class TodoItem : Entity
 {
     public TodoItemTitle? Title { get; set; }
-    public bool IsCompleted { get; private set; } = false;
     public DateTime CreatedOnUtc { get; private set; }
     public DateTime? CompletedOnUtc { get; private set; }
 
@@ -28,10 +27,9 @@ public sealed class TodoItem : Entity
 
     public Result Complete(DateTime utcNow)
     {
-        if (IsCompleted) return Result.Failure(TodoItemsDomainErrors.AlreadyCompleted);
+        if (CompletedOnUtc is not null) return Result.Failure(TodoItemsDomainErrors.AlreadyCompleted);
 
         CompletedOnUtc = utcNow;
-        IsCompleted = true;
 
         Raise(new TodoItemCompletedDomainEvent(Id));
 

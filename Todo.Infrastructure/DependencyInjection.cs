@@ -47,6 +47,8 @@ public static class DependencyInjection
 
         SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
         SqlMapper.AddTypeHandler(new TodoItemTitleTypeHandler());
+        //SqlMapper.AddTypeHandler(new GuidTypeHandler());
+        //SqlMapper.AddTypeHandler(new JsonTypeHandler());
 
         return services;
     }

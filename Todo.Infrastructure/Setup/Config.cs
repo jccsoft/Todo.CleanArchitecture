@@ -1,6 +1,7 @@
 ﻿namespace Todo.Infrastructure.Setup;
 
-internal static class Config
+public static class Config
 {
     public static CacheTypes CacheType { get; } = CacheTypes.InMemory;
+    public static DatabaseTypes DatabaseType { get; } = DatabaseTypes.MySql;
 }

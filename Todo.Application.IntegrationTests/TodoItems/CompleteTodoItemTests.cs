@@ -19,7 +19,6 @@ public class CompleteTodoItemTests(IntegrationTestWebAppFactory factory) : BaseI
         var todoItem = await TodoItemsRepository.GetByIdAsync(TodoItemData.Sample1Id);
 
         todoItem.Should().NotBeNull();
-        todoItem!.IsCompleted.Should().BeTrue();
     }
 
     [Fact]
