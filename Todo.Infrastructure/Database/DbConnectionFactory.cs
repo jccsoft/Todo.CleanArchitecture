@@ -16,7 +16,7 @@ internal sealed class DbConnectionFactory : IDbConnectionFactory
     {
         _connectionString = connectionString;
 
-        if (Config.DatabaseType == DatabaseTypes.MySql)
+        if (Config.IsDbMySQL)
         {
             _mySqlConnection = new(connectionString);
         }
@@ -27,7 +27,7 @@ internal sealed class DbConnectionFactory : IDbConnectionFactory
     }
     public IDbConnection GetOpenConnection()
     {
-        if (Config.DatabaseType == DatabaseTypes.MySql)
+        if (Config.IsDbMySQL)
         {
             return _mySqlConnection!;
         }
@@ -40,7 +40,7 @@ internal sealed class DbConnectionFactory : IDbConnectionFactory
 
     public IDbConnection CreateNewConnection()
     {
-        if (Config.DatabaseType == DatabaseTypes.MySql)
+        if (Config.IsDbMySQL)
         {
             return new MySqlConnection(_connectionString);
         }

@@ -30,7 +30,7 @@ internal sealed class OutboxRepository(IDbConnectionFactory dbConnectionFactory,
                     VALUES (@Id, @OccurredOnUtc, @MessageType 
                 """;
 
-                sql += Config.DatabaseType == DatabaseTypes.MySql ?
+                sql += Config.IsDbMySQL ?
                     ", @Content)" :
                     ", CAST(@Content as jsonb))";
 

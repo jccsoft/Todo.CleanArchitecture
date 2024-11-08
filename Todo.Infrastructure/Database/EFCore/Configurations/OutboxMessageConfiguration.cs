@@ -13,6 +13,6 @@ internal sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<Outb
         builder.HasKey(o => o.Id);
 
         builder.Property(o => o.Content)
-            .HasColumnType(Config.DatabaseType == DatabaseTypes.MySql ? "json" : "jsonb");
+            .HasColumnType(Config.IsDbMySQL ? "json" : "jsonb");
     }
 }

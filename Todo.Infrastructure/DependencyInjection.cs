@@ -44,13 +44,13 @@ public static class DependencyInjection
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
 
-        if (Config.ORMType.IsEFCore())
+        if (Config.IsOrmEFCore)
         {
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AppDbContext>());
 
             services.AddDbContext<AppDbContext>(optionsBuilder =>
             {
-                if (Config.DatabaseType.IsMySql())
+                if (Config.IsDbMySQL)
                     optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
                 else
                     optionsBuilder.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
@@ -77,12 +77,12 @@ public static class DependencyInjection
                                                  IConfiguration configuration,
                                                  string? cacheConfigKey)
     {
-        if (Config.CacheType == CacheTypes.InMemory)
+        if (Config.IsCacheInMemory)
         {
             services.AddMemoryCache();
             services.AddSingleton<ICacheService, InMemoryCacheService>();
         }
-        else if (Config.CacheType == CacheTypes.Redis && string.IsNullOrEmpty(cacheConfigKey) == false)
+        else if (Config.IsCacheRedis && string.IsNullOrEmpty(cacheConfigKey) == false)
         {
             var connectionString = configuration.GetConnectionString(cacheConfigKey);
             if (string.IsNullOrEmpty(connectionString) == false)

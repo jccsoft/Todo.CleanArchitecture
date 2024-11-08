@@ -2,18 +2,18 @@
 
 public static class Config
 {
-    public static CacheTypes CacheType { get; } = CacheTypes.InMemory;
-    public static DatabaseTypes DatabaseType { get; } = DatabaseTypes.MySql;
-    public static ORMTypes ORMType { get; } = ORMTypes.Dapper;
+    private static readonly CacheTypes _cacheType = CacheTypes.InMemory;
+    private static readonly DatabaseTypes _databaseType = DatabaseTypes.MySql;
+    private static readonly ORMTypes _ormType = ORMTypes.EFCore;
 
 
-    public static bool IsMySql(this DatabaseTypes type) => type == DatabaseTypes.MySql;
-    public static bool IsPostgres(this DatabaseTypes type) => type == DatabaseTypes.Postgres;
+    public static bool IsDbMySQL => _databaseType == DatabaseTypes.MySql;
+    public static bool IsDbPostgres => _databaseType == DatabaseTypes.Postgres;
 
-    public static bool IsDapper(this ORMTypes type) => type == ORMTypes.Dapper;
-    public static bool IsEFCore(this ORMTypes type) => type == ORMTypes.EFCore;
+    public static bool IsOrmDapper => _ormType == ORMTypes.Dapper;
+    public static bool IsOrmEFCore => _ormType == ORMTypes.EFCore;
 
-    public static bool IsInMemory(this CacheTypes type) => type == CacheTypes.InMemory;
-    public static bool IsRedis(this CacheTypes type) => type == CacheTypes.Redis;
+    public static bool IsCacheInMemory => _cacheType == CacheTypes.InMemory;
+    public static bool IsCacheRedis => _cacheType == CacheTypes.Redis;
 
 }

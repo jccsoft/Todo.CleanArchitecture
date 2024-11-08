@@ -10,6 +10,7 @@ using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
 using Todo.Application.Abstractions.Data;
 using Todo.Infrastructure.Database;
+using Todo.Infrastructure.Database.EFCore;
 using Todo.Infrastructure.Setup;
 
 namespace Todo.Application.IntegrationTests.Infrastructure;
@@ -34,29 +35,19 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
             services.AddScoped<IDbConnectionFactory>(_ => new DbConnectionFactory(connectionString));
 
-            //var context = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(AppDbContext));
-            //if (context != null)
-            //{
-            //    services.Remove(context);
-            //    var options = services.Where(r => (r.ServiceType == typeof(DbContextOptions))
-            //      || (r.ServiceType.IsGenericType && r.ServiceType.GetGenericTypeDefinition() == typeof(DbContextOptions<>))).ToArray();
-            //    foreach (var option in options)
-            //    {
-            //        services.Remove(option);
-            //    }
-            //}
 
-            ////services.RemoveAll(typeof(DbContextOptions<AppDbContext>));
-            //services.AddDbContext<AppDbContext>(optionsBuilder =>
-            //{
-            //    if (Config.DatabaseType.IsMySql())
-            //        optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-            //    else
-            //        optionsBuilder.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
-            //});
-            //var contextOptions = new DbContextOptionsBuilder<AppDbContext>()
-            //.UseInMemoryDatabase("<name>");
-            //services.AddScoped<DbContextOptions<MyDbContext>>(_ => contextOptions.Options);
+            if (Config.IsOrmEFCore)
+            {
+                services.RemoveAll(typeof(DbContextOptions<AppDbContext>));
+
+                var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+                if (Config.IsDbMySQL)
+                    optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                else
+                    optionsBuilder.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
+
+                services.AddScoped(_ => optionsBuilder.Options);
+            }
 
 
             if (_redisContainer is not null)
@@ -70,7 +61,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
     public async Task InitializeAsync()
     {
-        if (Config.DatabaseType.IsMySql())
+        if (Config.IsDbMySQL)
         {
             _mySqlContainer = new MySqlBuilder()
                 .WithImage("mysql:8.0")
@@ -82,7 +73,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
             await _mySqlContainer.StartAsync();
         }
 
-        if (Config.DatabaseType.IsPostgres())
+        if (Config.IsDbPostgres)
         {
             _postgresContainer = new PostgreSqlBuilder()
                 .WithImage("postgres:13.16")
@@ -95,7 +86,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
             await _postgresContainer.StartAsync();
         }
 
-        if (Config.CacheType.IsRedis())
+        if (Config.IsCacheRedis)
         {
             _redisContainer = new RedisBuilder()
                 .WithImage("redis:latest")

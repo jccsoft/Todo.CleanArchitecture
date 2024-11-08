@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -9,6 +10,7 @@ using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
 using Todo.Application.Abstractions.Data;
 using Todo.Infrastructure.Database;
+using Todo.Infrastructure.Database.EFCore;
 using Todo.Infrastructure.Setup;
 
 namespace Todo.WebApi.FunctionalTests.Infrastructure;
@@ -27,11 +29,25 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
         {
             services.RemoveAll(typeof(IDbConnectionFactory));
 
-            if (_mySqlContainer is not null)
-                services.AddScoped<IDbConnectionFactory>(_ => new DbConnectionFactory(_mySqlContainer.GetConnectionString()));
+            string connectionString = _mySqlContainer is not null ?
+                _mySqlContainer.GetConnectionString() :
+                _postgresContainer!.GetConnectionString();
 
-            if (_postgresContainer is not null)
-                services.AddScoped<IDbConnectionFactory>(_ => new DbConnectionFactory(_postgresContainer.GetConnectionString()));
+            services.AddScoped<IDbConnectionFactory>(_ => new DbConnectionFactory(connectionString));
+
+
+            if (Config.IsOrmEFCore)
+            {
+                services.RemoveAll(typeof(DbContextOptions<AppDbContext>));
+
+                var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+                if (Config.IsDbMySQL)
+                    optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                else
+                    optionsBuilder.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
+
+                services.AddScoped(_ => optionsBuilder.Options);
+            }
 
 
             if (_redisContainer is not null)
@@ -45,23 +61,23 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
 
     public async Task InitializeAsync()
     {
-        if (Config.DatabaseType.IsMySql())
+        if (Config.IsDbMySQL)
         {
             _mySqlContainer = new MySqlBuilder()
-            .WithImage("mysql:8.0")
-            .WithDatabase("tododb")
-            .WithEnvironment("MYSQL_ROOT_PASSWORD", "my-secret-pw")
-            .WithResourceMapping(new FileInfo("./init-mysql.sql"), "/docker-entrypoint-initdb.d/")
-            .Build();
+                .WithImage("mysql:8.0")
+                .WithDatabase("tododb")
+                .WithEnvironment("MYSQL_ROOT_PASSWORD", "my-secret-pw")
+                .WithResourceMapping(new FileInfo("./init-mysql.sql"), "/docker-entrypoint-initdb.d/")
+                .Build();
 
             await _mySqlContainer.StartAsync();
         }
 
-        if (Config.DatabaseType.IsPostgres())
+        if (Config.IsDbPostgres)
         {
             _postgresContainer = new PostgreSqlBuilder()
                 .WithImage("postgres:13.16")
-                .WithDatabase("runtrackr")
+                .WithDatabase("tododb")
                 .WithUsername("postgres")
                 .WithPassword("postgres")
                 .WithResourceMapping(new FileInfo("./init-postgres.sql"), "/docker-entrypoint-initdb.d/")
@@ -70,7 +86,7 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
             await _postgresContainer.StartAsync();
         }
 
-        if (Config.CacheType.IsRedis())
+        if (Config.IsCacheRedis)
         {
             _redisContainer = new RedisBuilder()
                 .WithImage("redis:latest")
