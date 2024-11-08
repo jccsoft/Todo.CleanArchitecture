@@ -45,7 +45,7 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
 
     public async Task InitializeAsync()
     {
-        if (Config.DatabaseType == DatabaseTypes.MySql)
+        if (Config.DatabaseType.IsMySql())
         {
             _mySqlContainer = new MySqlBuilder()
             .WithImage("mysql:8.0")
@@ -56,10 +56,11 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
 
             await _mySqlContainer.StartAsync();
         }
-        else
+
+        if (Config.DatabaseType.IsPostgres())
         {
             _postgresContainer = new PostgreSqlBuilder()
-                .WithImage("postgres:latest")
+                .WithImage("postgres:13.16")
                 .WithDatabase("runtrackr")
                 .WithUsername("postgres")
                 .WithPassword("postgres")
@@ -69,7 +70,7 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
             await _postgresContainer.StartAsync();
         }
 
-        if (Config.CacheType == CacheTypes.Redis)
+        if (Config.CacheType.IsRedis())
         {
             _redisContainer = new RedisBuilder()
                 .WithImage("redis:latest")

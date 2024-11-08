@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using System.Data;
 
-namespace Todo.Infrastructure.Database;
+namespace Todo.Infrastructure.Database.Dapper;
 
 internal sealed class TodoItemTitleTypeHandler : SqlMapper.TypeHandler<TodoItemTitle>
 {

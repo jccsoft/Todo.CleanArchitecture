@@ -5,7 +5,7 @@ using Todo.Application.Abstractions.Data;
 
 namespace Todo.Infrastructure.Repositories;
 
-internal sealed class TodoItemsRepository(IDbConnectionFactory dbConnectionFactory, ILogger<TodoItemsRepository> logger) : ITodoItemsRepository
+internal sealed class TodoItemsRepositoryDapper(IDbConnectionFactory dbConnectionFactory, ILogger<TodoItemsRepositoryDapper> logger) : ITodoItemsRepository
 {
     private readonly IDbConnection _dbConnection = dbConnectionFactory.GetOpenConnection();
 

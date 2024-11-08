@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using System.Data;
 using Todo.Application.Abstractions.Data;
 using Todo.Infrastructure.Setup;
@@ -16,12 +15,7 @@ internal sealed class OutboxRepository(IDbConnectionFactory dbConnectionFactory,
     private readonly IDbConnection _dbConnection = dbConnectionFactory.GetOpenConnection();
     private readonly OutboxOptions _outboxOptions = outboxOptions.Value;
 
-    private static readonly JsonSerializerSettings _jsonSerializerSettings = new()
-    {
-        TypeNameHandling = TypeNameHandling.All
-    };
-
-    public async Task<int> AddRangeAsync(List<OutboxMessage>? messages)
+    public async Task<int> AddRangeAsync(List<OutboxMessage> messages)
     {
         try
         {

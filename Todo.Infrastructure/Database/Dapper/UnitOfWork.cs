@@ -3,7 +3,7 @@ using System.Data;
 using Todo.Application.Abstractions.Data;
 using Todo.Infrastructure.Outbox;
 
-namespace Todo.Infrastructure.Database;
+namespace Todo.Infrastructure.Database.Dapper;
 
 internal sealed class UnitOfWork : IUnitOfWork
 {
@@ -11,11 +11,6 @@ internal sealed class UnitOfWork : IUnitOfWork
     private readonly IDateTimeProvider _dateTimeProvider;
     private readonly IOutboxRepository _outboxRepository;
     private IDbTransaction _dbTransaction;
-
-    private static readonly JsonSerializerSettings _jsonSerializerSettings = new()
-    {
-        TypeNameHandling = TypeNameHandling.All
-    };
 
     public UnitOfWork(IDbConnectionFactory dbConnectionFactory, IDateTimeProvider dateTimeProvider, IOutboxRepository outboxRepository)
     {
@@ -30,12 +25,16 @@ internal sealed class UnitOfWork : IUnitOfWork
     {
         try
         {
-            await AddDomainEventsAsOutboxMessages(entities);
+            bool success = await AddDomainEventsAsOutboxMessages(entities);
 
-            _dbTransaction.Commit();
+            if (success)
+                _dbTransaction.Commit();
+            else
+                _dbTransaction.Rollback();
+
             _dbTransaction = _dbConnection.BeginTransaction();
 
-            return 1;
+            return success ? 1 : 0;
         }
         catch
         {
@@ -45,9 +44,9 @@ internal sealed class UnitOfWork : IUnitOfWork
         }
     }
 
-    private async Task<int> AddDomainEventsAsOutboxMessages(List<Entity>? entities)
+    private async Task<bool> AddDomainEventsAsOutboxMessages(List<Entity>? entities)
     {
-        if (entities is null) return 0;
+        if (entities is null) return true;
 
         var outboxMessages =
             entities
@@ -63,10 +62,15 @@ internal sealed class UnitOfWork : IUnitOfWork
                 Guid.NewGuid(),
                 _dateTimeProvider.UtcNow,
                 domainEvent.GetType().Name,
-                JsonConvert.SerializeObject(domainEvent, _jsonSerializerSettings)))
+                JsonConvert.SerializeObject(domainEvent, JsonSettings.SerializerSettings)))
             .ToList();
 
-        return await _outboxRepository.AddRangeAsync(outboxMessages);
+
+        if (outboxMessages.Count == 0) return true;
+
+        int affectedMessages = await _outboxRepository.AddRangeAsync(outboxMessages);
+
+        return affectedMessages > 0;
     }
 
     public void Dispose()

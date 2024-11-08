@@ -11,27 +11,27 @@ services:
     depends_on:
       - db
  
-  # db:
-  #   image: mysql:8.0
-  #   container_name: todo.mysql
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: my-secret-pw
-  #     MYSQL_DATABASE: tododb
-  #   ports:
-  #     - "3406:3306"
-  #   volumes:
-  #     - ./init-mysql.sql:/docker-entrypoint-initdb.d/init-db.sql
   db:
-    image: postgres:latest
-    container_name: todo.postgresql
+    image: mysql:8.0
+    container_name: todo.mysql
     environment:
-      - POSTGRES_DB=tododb
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    volumes:
-      - ./init-postgres.sql:/docker-entrypoint-initdb.d/init-db.sql
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: tododb
     ports:
-      - 5434:5432
+      - "3406:3306"
+    volumes:
+      - ./init-mysql.sql:/docker-entrypoint-initdb.d/init-db.sql
+  # db:
+  #   image: postgres:13.16
+  #   container_name: todo.postgresql
+  #   environment:
+  #     - POSTGRES_DB=tododb
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=postgres
+  #   volumes:
+  #     - ./init-postgres.sql:/docker-entrypoint-initdb.d/init-db.sql
+  #   ports:
+  #     - 5434:5432
 
   seq:
     image: datalust/seq:latest

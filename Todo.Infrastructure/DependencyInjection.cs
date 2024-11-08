@@ -7,6 +7,8 @@ using Todo.Application.Abstractions.Data;
 using Todo.Infrastructure;
 using Todo.Infrastructure.Caching;
 using Todo.Infrastructure.Database;
+using Todo.Infrastructure.Database.Dapper;
+using Todo.Infrastructure.Database.EFCore;
 using Todo.Infrastructure.Outbox;
 using Todo.Infrastructure.Repositories;
 using Todo.Infrastructure.Setup;
@@ -39,16 +41,33 @@ public static class DependencyInjection
 
         services.AddScoped<IDbConnectionFactory>(_ => new DbConnectionFactory(connectionString));
 
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-        services.AddScoped<ITodoItemsRepository, TodoItemsRepository>();
-
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
-        SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
-        SqlMapper.AddTypeHandler(new TodoItemTitleTypeHandler());
-        //SqlMapper.AddTypeHandler(new GuidTypeHandler());
-        //SqlMapper.AddTypeHandler(new JsonTypeHandler());
+
+        if (Config.ORMType.IsEFCore())
+        {
+            services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AppDbContext>());
+
+            services.AddDbContext<AppDbContext>(optionsBuilder =>
+            {
+                if (Config.DatabaseType.IsMySql())
+                    optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                else
+                    optionsBuilder.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
+            });
+
+            services.AddScoped<ITodoItemsRepository, TodoItemsRepositoryEFCore>();
+        }
+        else
+        {
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddScoped<ITodoItemsRepository, TodoItemsRepositoryDapper>();
+
+            SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
+            SqlMapper.AddTypeHandler(new TodoItemTitleTypeHandler());
+        }
+
 
         return services;
     }

@@ -15,7 +15,7 @@ builder.Services
     .AddApplication()
     .AddPresentation()
     .AddInfrastructure(builder.Configuration,
-                       databaseConfigKey: Config.DatabaseType.ToString(),
+                       databaseConfigKey: Config.DatabaseType.IsMySql() ? "MySql" : "Postgres",
                        cacheConfigKey: "Cache",
                        outboxConfigKey: "Outbox");
 
