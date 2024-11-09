@@ -4,7 +4,7 @@ public static class Config
 {
     private static readonly CacheTypes _cacheType = CacheTypes.InMemory;
     private static readonly DatabaseTypes _databaseType = DatabaseTypes.MySql;
-    private static readonly ORMTypes _ormType = ORMTypes.EFCore;
+    private static readonly ORMTypes _ormType = ORMTypes.Dapper;
 
 
     public static bool IsDbMySQL => _databaseType == DatabaseTypes.MySql;

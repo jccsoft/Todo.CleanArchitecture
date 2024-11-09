@@ -14,8 +14,7 @@ internal sealed class TodoItemConfiguration : IEntityTypeConfiguration<TodoItem>
                         navigationBuilder =>
                         {
                             navigationBuilder.Property(title => title.Value)
-                                             .HasColumnName("Title");
+                                             .HasColumnName("title");
                         });
-
     }
 }

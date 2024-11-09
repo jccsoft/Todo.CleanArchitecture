@@ -13,16 +13,18 @@ internal sealed class TodoItemsRepositoryDapper(IDbConnectionFactory dbConnectio
     {
         try
         {
-            string sql = "SELECT Id, Title, CreatedOnUtc, CompletedOnUtc FROM todoitems";
+            string sql = """
+                SELECT 
+                    id as Id, 
+                    title as Title, 
+                    created_on_utc as CreatedOnUtc, 
+                    completed_on_utc as CompletedOnUtc
+                FROM todoitems
+            """;
 
-            if (includeCompleted == false) sql += " WHERE CompletedOnUtc is null";
+            if (includeCompleted == false) sql += " WHERE completed_on_utc is null";
 
-            var todoItems = await _dbConnection.QueryAsync<TodoItem>(
-                sql,
-                new
-                {
-                    IsCompleted = includeCompleted ? 1 : 0
-                });
+            var todoItems = await _dbConnection.QueryAsync<TodoItem>(sql);
 
             return todoItems.ToList();
         }
@@ -38,9 +40,13 @@ internal sealed class TodoItemsRepositoryDapper(IDbConnectionFactory dbConnectio
         try
         {
             const string sql = """
-                SELECT Id, Title, CreatedOnUtc, CompletedOnUtc
+                SELECT 
+                    id as Id, 
+                    title as Title, 
+                    created_on_utc as CreatedOnUtc, 
+                    completed_on_utc as CompletedOnUtc
                 FROM todoitems
-                WHERE Id = @Id
+                WHERE id = @Id
             """;
 
             var todo = await _dbConnection.QueryFirstOrDefaultAsync<TodoItem>(
@@ -65,8 +71,8 @@ internal sealed class TodoItemsRepositoryDapper(IDbConnectionFactory dbConnectio
         try
         {
             const string sql = """
-            INSERT INTO todoitems (Id, Title, CreatedOnUtc)
-            VALUES (@Id, @Title, @CreatedOnUtc)
+                INSERT INTO todoitems (id, title, created_on_utc)
+                VALUES (@Id, @Title, @CreatedOnUtc)
             """;
 
             int affectedRows = await _dbConnection.ExecuteAsync(
@@ -95,9 +101,9 @@ internal sealed class TodoItemsRepositoryDapper(IDbConnectionFactory dbConnectio
             const string sql = """
                 UPDATE todoitems
                 SET 
-                    Title = @Title,
-                    CompletedOnUtc = @CompletedOnUtc
-                WHERE Id = @Id
+                    title = @Title,
+                    completed_on_utc = @CompletedOnUtc
+                WHERE id = @Id
             """;
 
             int affectedRows = await _dbConnection.ExecuteAsync(
@@ -125,7 +131,7 @@ internal sealed class TodoItemsRepositoryDapper(IDbConnectionFactory dbConnectio
         {
             const string sql = """
                 DELETE FROM todoitems
-                WHERE Id = @Id
+                WHERE id = @Id
             """;
 
             int affectedRows = await _dbConnection.ExecuteAsync(

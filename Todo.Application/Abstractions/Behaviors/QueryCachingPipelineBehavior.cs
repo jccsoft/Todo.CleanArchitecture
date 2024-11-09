@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Todo.Application.Abstractions.Caching;
 
 namespace Todo.Application.Abstractions.Behaviors;
 

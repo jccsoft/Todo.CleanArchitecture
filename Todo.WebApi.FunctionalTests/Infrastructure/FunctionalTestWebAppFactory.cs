@@ -42,7 +42,7 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
 
                 var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
                 if (Config.IsDbMySQL)
-                    optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                    optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)).UseSnakeCaseNamingConvention();
                 else
                     optionsBuilder.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
 

@@ -26,7 +26,7 @@ internal sealed class OutboxRepository(IDbConnectionFactory dbConnectionFactory,
             foreach (var message in messages)
             {
                 string sql = """
-                    INSERT INTO outbox_messages (Id, OccurredOnUtc, MessageType, Content)
+                    INSERT INTO outbox_messages (id, occurred_on_utc, message_type, content)
                     VALUES (@Id, @OccurredOnUtc, @MessageType 
                 """;
 
@@ -60,10 +60,10 @@ internal sealed class OutboxRepository(IDbConnectionFactory dbConnectionFactory,
         try
         {
             var sql = $"""                
-                SELECT Id, Content
+                SELECT id, content
                 FROM outbox_messages
-                WHERE ProcessedOnUtc IS NULL
-                ORDER BY OccurredOnUtc
+                WHERE processed_on_utc IS NULL
+                ORDER BY occurred_on_utc
                 LIMIT {_outboxOptions.BatchSize}
                 FOR UPDATE
             """;
@@ -87,8 +87,8 @@ internal sealed class OutboxRepository(IDbConnectionFactory dbConnectionFactory,
         {
             const string sql = """
                 UPDATE outbox_messages
-                SET ProcessedOnUtc = @ProcessedOnUtc, MessageError = @MessageError
-                WHERE Id = @Id
+                SET processed_on_utc = @ProcessedOnUtc, message_error = @MessageError
+                WHERE id = @Id
             """;
 
             await newConnection.ExecuteAsync(

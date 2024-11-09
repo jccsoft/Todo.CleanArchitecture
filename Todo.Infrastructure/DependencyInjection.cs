@@ -51,7 +51,7 @@ public static class DependencyInjection
             services.AddDbContext<AppDbContext>(optionsBuilder =>
             {
                 if (Config.IsDbMySQL)
-                    optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                    optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)).UseSnakeCaseNamingConvention();
                 else
                     optionsBuilder.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
             });
@@ -109,7 +109,10 @@ public static class DependencyInjection
             var databaseConnectionString = configuration.GetConnectionString(databaseConfigKey) ??
                                throw new ArgumentNullException(nameof(configuration));
 
-            healthChecksBuilder.AddMySql(databaseConnectionString);
+            if (Config.IsDbMySQL)
+                healthChecksBuilder.AddMySql(databaseConnectionString);
+            else
+                healthChecksBuilder.AddNpgSql(databaseConnectionString);
         }
 
         if (string.IsNullOrEmpty(cacheConfigKey) == false)
