@@ -18,6 +18,7 @@ public class CompleteTodoItem : IEndpoint
             return result.Match(Results.NoContent, CustomResults.Problem);
         })
         .WithTags(Tags.TodoItems)
-        .WithSummary("Complete");
+        .WithSummary("Complete")
+        .Produces(StatusCodes.Status204NoContent);
     }
 }

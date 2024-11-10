@@ -18,6 +18,7 @@ public class GetAllTodoItems() : IEndpoint
             return result.Match(Results.Ok, CustomResults.Problem);
         })
         .WithTags(Tags.TodoItems)
-        .WithSummary("Get All");
+        .WithSummary("Get All")
+        .Produces<List<TodoItemResponse>>(StatusCodes.Status200OK);
     }
 }

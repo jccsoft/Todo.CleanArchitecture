@@ -18,6 +18,7 @@ public class GetByIdTodoItem : IEndpoint
             return result.Match(Results.Ok, CustomResults.Problem);
         })
         .WithTags(Tags.TodoItems)
-        .WithSummary("Get by Id");
+        .WithSummary("Get by Id")
+        .Produces<TodoItemResponse>(StatusCodes.Status200OK);
     }
 }

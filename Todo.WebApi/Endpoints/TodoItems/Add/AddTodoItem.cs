@@ -18,6 +18,7 @@ public class AddTodoItem : IEndpoint
             return result.Match(Results.Ok, CustomResults.Problem);
         })
         .WithTags(Tags.TodoItems)
-        .WithSummary("Add");
+        .WithSummary("Add")
+        .Produces<Guid>(StatusCodes.Status200OK);
     }
 }

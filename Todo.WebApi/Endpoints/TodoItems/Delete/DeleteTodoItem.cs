@@ -18,6 +18,7 @@ public class DeleteTodoItem : IEndpoint
             return result.Match(Results.NoContent, CustomResults.Problem);
         })
         .WithTags(Tags.TodoItems)
-        .WithSummary("Delete");
+        .WithSummary("Delete")
+        .Produces(StatusCodes.Status204NoContent);
     }
 }
