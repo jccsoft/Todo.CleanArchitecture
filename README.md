@@ -29,7 +29,7 @@ Todo app based on Milan Jovanovic's course 'Pragmatic Clean Architecture' at htt
 - Database: DbConnectionFactory (mysql or postgres), UnitOfWork (transactions in commands) and sql mappers for dapper (DataOnly and TodoItemTitle)
 - Outbox: clases for Outbox pattern
 - Repositories: implementation of Domain.ITodoItemsRepository
-- Setup: in Config class you can configure CacheType (In-Memory or Redis) and DatabaseType (MySql or Postgres)
+- Setup / Config: configuration of CacheType (In-Memory / Redis), ORM (Dapper / EF Core) and DatabaseType (MySql or Postgres)
 - Time: implementation of SharedKernel.IDateTimeProvider
 
 ### Project Application:
