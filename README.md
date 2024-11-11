@@ -12,7 +12,8 @@ Todo app based on Milan Jovanovic's course 'Pragmatic Clean Architecture' at htt
 - ORM: EFCore or Dapper.
 - Healthchecks: for database and caching.
 - Logging with Serilog and Seq.
-- OpenApi / Swagger
+- OpenApi / Swagger.
+- Testing: Unit, Integration, Functional and Architecture.
 
 
 
