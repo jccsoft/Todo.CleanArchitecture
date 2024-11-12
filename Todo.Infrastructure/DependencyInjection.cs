@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Todo.Application.Abstractions.Caching;
 using Todo.Application.Abstractions.Data;
-using Todo.Infrastructure;
 using Todo.Infrastructure.Caching;
 using Todo.Infrastructure.Database;
 using Todo.Infrastructure.Database.Dapper;
@@ -18,31 +17,27 @@ namespace Todo.Infrastructure;
 public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services,
-                                                       IConfiguration configuration,
-                                                       string databaseConfigKey,
-                                                       string? cacheConfigKey = default,
-                                                       string? outboxConfigKey = default)
+                                                       string dbConnectionString,
+                                                       string redisConnectionString,
+                                                       IConfigurationSection outboxConfigSection)
     {
-        services.AddPersistence(configuration, databaseConfigKey);
-        services.AddCaching(configuration, cacheConfigKey);
-        services.AddHealthChecks(configuration, databaseConfigKey, cacheConfigKey);
-        services.AddBackgroundJobs(configuration, outboxConfigKey);
+        services
+            .AddMyServices(dbConnectionString)
+            .AddMyCaching(redisConnectionString)
+            .AddMyHealthChecks(dbConnectionString, redisConnectionString)
+            .AddMyBackgroundJobs(outboxConfigSection);
 
         return services;
     }
 
 
-    public static IServiceCollection AddPersistence(this IServiceCollection services,
-                                                    IConfiguration configuration,
-                                                    string databaseConfigKey)
+    private static IServiceCollection AddMyServices(this IServiceCollection services, string dbConnectionString)
     {
-        var connectionString = configuration.GetConnectionString(databaseConfigKey) ??
-                               throw new ArgumentNullException(nameof(configuration));
-
-        services.AddScoped<IDbConnectionFactory>(_ => new DbConnectionFactory(connectionString));
+        services.AddScoped<IDbConnectionFactory>(_ => new DbConnectionFactory(dbConnectionString));
 
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
+        services.AddScoped<IOutboxRepository, OutboxRepository>();
 
         if (Config.IsOrmEFCore)
         {
@@ -51,9 +46,9 @@ public static class DependencyInjection
             services.AddDbContext<AppDbContext>(optionsBuilder =>
             {
                 if (Config.IsDbMySQL)
-                    optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)).UseSnakeCaseNamingConvention();
+                    optionsBuilder.UseMySql(dbConnectionString, ServerVersion.AutoDetect(dbConnectionString)).UseSnakeCaseNamingConvention();
                 else
-                    optionsBuilder.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
+                    optionsBuilder.UseNpgsql(dbConnectionString).UseSnakeCaseNamingConvention();
             });
 
             services.AddScoped<ITodoItemsRepository, TodoItemsRepositoryEFCore>();
@@ -73,68 +68,48 @@ public static class DependencyInjection
     }
 
 
-    private static IServiceCollection AddCaching(this IServiceCollection services,
-                                                 IConfiguration configuration,
-                                                 string? cacheConfigKey)
+    private static IServiceCollection AddMyCaching(this IServiceCollection services, string redisConnectionString = default)
     {
         if (Config.IsCacheInMemory)
         {
             services.AddMemoryCache();
             services.AddSingleton<ICacheService, InMemoryCacheService>();
         }
-        else if (Config.IsCacheRedis && string.IsNullOrEmpty(cacheConfigKey) == false)
+        else if (Config.IsCacheRedis && string.IsNullOrEmpty(redisConnectionString) == false)
         {
-            var connectionString = configuration.GetConnectionString(cacheConfigKey);
-            if (string.IsNullOrEmpty(connectionString) == false)
-            {
-                services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
-
-                services.AddSingleton<ICacheService, RedisCacheService>();
-            }
+            services.AddStackExchangeRedisCache(options => options.Configuration = redisConnectionString);
+            services.AddSingleton<ICacheService, RedisCacheService>();
         }
 
         return services;
     }
 
 
-    private static IServiceCollection AddHealthChecks(this IServiceCollection services,
-                                                      IConfiguration configuration,
-                                                      string? databaseConfigKey = default,
-                                                      string? cacheConfigKey = default)
+    private static IServiceCollection AddMyHealthChecks(this IServiceCollection services,
+                                                      string dbConnectionString,
+                                                      string redisConnectionString)
     {
         IHealthChecksBuilder healthChecksBuilder = services.AddHealthChecks();
 
-        if (string.IsNullOrEmpty(databaseConfigKey) == false)
-        {
-            var databaseConnectionString = configuration.GetConnectionString(databaseConfigKey) ??
-                               throw new ArgumentNullException(nameof(configuration));
+        if (Config.IsDbMySQL)
+            healthChecksBuilder.AddMySql(dbConnectionString);
+        else
+            healthChecksBuilder.AddNpgSql(dbConnectionString);
 
-            if (Config.IsDbMySQL)
-                healthChecksBuilder.AddMySql(databaseConnectionString);
-            else
-                healthChecksBuilder.AddNpgSql(databaseConnectionString);
-        }
+        if (string.IsNullOrEmpty(redisConnectionString) == false)
+            healthChecksBuilder.AddRedis(redisConnectionString);
 
-        if (string.IsNullOrEmpty(cacheConfigKey) == false)
-        {
-            var cacheConnectionString = configuration.GetConnectionString(cacheConfigKey);
-            if (string.IsNullOrEmpty(cacheConnectionString) == false)
-                healthChecksBuilder.AddRedis(cacheConnectionString);
-        }
 
         return services;
     }
 
 
-    private static IServiceCollection AddBackgroundJobs(this IServiceCollection services,
-                                                        IConfiguration configuration,
-                                                        string? outboxConfigKey = default)
+    private static IServiceCollection AddMyBackgroundJobs(this IServiceCollection services,
+                                                        IConfigurationSection outboxConfigSection)
     {
-        if (string.IsNullOrEmpty(outboxConfigKey) == false && configuration.GetSection(outboxConfigKey).Exists())
+        if (outboxConfigSection.Exists())
         {
-            services.AddScoped<IOutboxRepository, OutboxRepository>();
-
-            services.Configure<OutboxOptions>(configuration.GetSection(outboxConfigKey));
+            services.Configure<OutboxOptions>(outboxConfigSection);
 
             services.AddQuartz();
 

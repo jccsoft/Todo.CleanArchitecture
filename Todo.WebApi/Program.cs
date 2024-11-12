@@ -11,13 +11,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, loggerConfig) =>
     loggerConfig.ReadFrom.Configuration(context.Configuration));
 
+string dbConnectionString = builder.Environment.IsDevelopment() ?
+    builder.Configuration.GetConnectionString(Config.IsDbMySQL ? "MySQL" : "PostgreSQL") ?? "" :
+    (Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb") ?? "").Replace(":", ";port=").Replace("localdb", "tododb");
+
+string redisConnectionString = builder.Configuration.GetConnectionString("Cache") ?? "";
+
+var outboxConfigSection = builder.Configuration.GetSection("Outbox");
+
 builder.Services
     .AddApplication()
     .AddPresentation()
-    .AddInfrastructure(builder.Configuration,
-                       databaseConfigKey: Config.IsDbMySQL ? "MySql" : "Postgres",
-                       cacheConfigKey: "Cache",
-                       outboxConfigKey: "Outbox");
+    .AddInfrastructure(dbConnectionString, redisConnectionString, outboxConfigSection);
 
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
 
@@ -39,10 +44,9 @@ RouteGroupBuilder versionedGroup = app
 
 app.MapEndpoints(versionedGroup);
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwaggerWithUi();
-}
+//if (app.Environment.IsDevelopment())
+app.UseSwaggerWithUi();
+
 
 app.UseHttpsRedirection();
 

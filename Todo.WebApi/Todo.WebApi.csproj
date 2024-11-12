@@ -26,4 +26,8 @@
     <ProjectReference Include="..\Todo.SharedKernel\Todo.SharedKernel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Logs\" />
+  </ItemGroup>
+
 </Project>

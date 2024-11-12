@@ -2,6 +2,6 @@
 
 public enum DatabaseTypes
 {
-    MySql,
-    Postgres
+    MySQL,
+    PostgreSQL
 }

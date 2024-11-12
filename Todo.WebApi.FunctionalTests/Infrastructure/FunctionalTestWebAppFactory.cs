@@ -73,7 +73,7 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
             await _mySqlContainer.StartAsync();
         }
 
-        if (Config.IsDbPostgres)
+        if (Config.IsDbPostgreSQL)
         {
             _postgresContainer = new PostgreSqlBuilder()
                 .WithImage("postgres:13.16")
