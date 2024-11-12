@@ -1,12 +1,12 @@
-﻿using System.Reflection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.Reflection;
 using Todo.WebApi.Endpoints;
 
 namespace Todo.WebApi.Extensions;
 
 public static class EndpointExtensions
 {
-    public static IServiceCollection AddEndpoints(this IServiceCollection services, Assembly assembly)
+    public static IServiceCollection AddMyEndpoints(this IServiceCollection services, Assembly assembly)
     {
         ServiceDescriptor[] serviceDescriptors = assembly
             .DefinedTypes
@@ -20,13 +20,11 @@ public static class EndpointExtensions
         return services;
     }
 
-    public static IApplicationBuilder MapEndpoints(
-        this WebApplication app,
-        RouteGroupBuilder? routeGroupBuilder = null)
+    public static IApplicationBuilder MapMyEndpoints(this WebApplication app)
     {
         IEnumerable<IEndpoint> endpoints = app.Services.GetRequiredService<IEnumerable<IEndpoint>>();
 
-        IEndpointRouteBuilder builder = routeGroupBuilder is null ? app : routeGroupBuilder;
+        IEndpointRouteBuilder builder = app.GetVersionedGroup();
 
         foreach (IEndpoint endpoint in endpoints)
         {
@@ -40,4 +38,6 @@ public static class EndpointExtensions
     {
         return app.RequireAuthorization(permission);
     }
+
+
 }

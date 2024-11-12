@@ -2,11 +2,12 @@
 
 namespace Todo.WebApi.Extensions;
 
-public static class ApplicationBuilderExtensions
+public static class SwaggerExtensions
 {
-    public static IApplicationBuilder UseSwaggerWithUi(this WebApplication app)
+    public static IApplicationBuilder UseMySwaggerWithUi(this WebApplication app)
     {
         app.UseSwagger();
+
         app.UseSwaggerUI(options =>
         {
             IReadOnlyList<ApiVersionDescription> descriptions = app.DescribeApiVersions();

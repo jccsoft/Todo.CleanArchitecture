@@ -18,13 +18,13 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services,
                                                        string dbConnectionString,
-                                                       string redisConnectionString,
+                                                       string cacheConnectionString,
                                                        IConfigurationSection outboxConfigSection)
     {
         services
             .AddMyServices(dbConnectionString)
-            .AddMyCaching(redisConnectionString)
-            .AddMyHealthChecks(dbConnectionString, redisConnectionString)
+            .AddMyCaching(cacheConnectionString)
+            .AddMyHealthChecks(dbConnectionString, cacheConnectionString)
             .AddMyBackgroundJobs(outboxConfigSection);
 
         return services;
@@ -68,16 +68,16 @@ public static class DependencyInjection
     }
 
 
-    private static IServiceCollection AddMyCaching(this IServiceCollection services, string redisConnectionString = default)
+    private static IServiceCollection AddMyCaching(this IServiceCollection services, string cacheConnectionString = default)
     {
         if (Config.IsCacheInMemory)
         {
             services.AddMemoryCache();
             services.AddSingleton<ICacheService, InMemoryCacheService>();
         }
-        else if (Config.IsCacheRedis && string.IsNullOrEmpty(redisConnectionString) == false)
+        else if (Config.IsCacheRedis && string.IsNullOrEmpty(cacheConnectionString) == false)
         {
-            services.AddStackExchangeRedisCache(options => options.Configuration = redisConnectionString);
+            services.AddStackExchangeRedisCache(options => options.Configuration = cacheConnectionString);
             services.AddSingleton<ICacheService, RedisCacheService>();
         }
 
@@ -87,7 +87,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddMyHealthChecks(this IServiceCollection services,
                                                       string dbConnectionString,
-                                                      string redisConnectionString)
+                                                      string cacheConnectionString)
     {
         IHealthChecksBuilder healthChecksBuilder = services.AddHealthChecks();
 
@@ -96,8 +96,8 @@ public static class DependencyInjection
         else
             healthChecksBuilder.AddNpgSql(dbConnectionString);
 
-        if (string.IsNullOrEmpty(redisConnectionString) == false)
-            healthChecksBuilder.AddRedis(redisConnectionString);
+        if (string.IsNullOrEmpty(cacheConnectionString) == false)
+            healthChecksBuilder.AddRedis(cacheConnectionString);
 
 
         return services;
