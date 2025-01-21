@@ -29,7 +29,7 @@ public class GetByIdTodoItemTests(FunctionalTestWebAppFactory factory) : BaseFun
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
         CustomProblemDetails problemDetails = await response.GetProblemDetails();
-        problemDetails.Title = TodoItemsDomainErrors.NotFound.Code;
-        problemDetails.Detail = TodoItemsDomainErrors.NotFound.Description;
+        problemDetails.Title = TodoItemsErrors.NotFound.Code;
+        problemDetails.Detail = TodoItemsErrors.NotFound.Description;
     }
 }

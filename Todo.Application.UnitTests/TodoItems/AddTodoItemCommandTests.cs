@@ -59,7 +59,7 @@ public class AddTodoItemCommandTests
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TodoItemsDomainErrors.MissingTitle);
+        result.Error.Should().Be(TodoItemsErrors.MissingTitle);
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class AddTodoItemCommandTests
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TodoItemsDomainErrors.NoRowsAffected);
+        result.Error.Should().Be(TodoItemsErrors.NoRowsAffected);
     }
 
     [Fact]
@@ -99,6 +99,6 @@ public class AddTodoItemCommandTests
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TodoItemsDomainErrors.NoRowsAffected);
+        result.Error.Should().Be(TodoItemsErrors.NoRowsAffected);
     }
 }

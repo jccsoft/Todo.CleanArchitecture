@@ -7,7 +7,7 @@ internal class GetTodoItemByIdQueryHandler(
     public async Task<Result<TodoItemResponse>> Handle(GetTodoItemByIdQuery request, CancellationToken cancellationToken)
     {
         var todoItem = await todoItemsRepository.GetByIdAsync(request.Id, cancellationToken);
-        if (todoItem is null) return Result.Failure<TodoItemResponse>(TodoItemsDomainErrors.NotFound);
+        if (todoItem is null) return Result.Failure<TodoItemResponse>(TodoItemsErrors.NotFound);
 
         var output = new TodoItemResponse(
             todoItem.Id,

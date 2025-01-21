@@ -68,7 +68,7 @@ public static class DependencyInjection
     }
 
 
-    private static IServiceCollection AddMyCaching(this IServiceCollection services, string cacheConnectionString = default)
+    private static IServiceCollection AddMyCaching(this IServiceCollection services, string cacheConnectionString)
     {
         if (Config.IsCacheInMemory)
         {

@@ -51,6 +51,6 @@ public class GetTodoItemByIdQueryTests
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TodoItemsDomainErrors.NotFound);
+        result.Error.Should().Be(TodoItemsErrors.NotFound);
     }
 }

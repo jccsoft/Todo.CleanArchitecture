@@ -61,7 +61,7 @@ public class DeleteTodoItemCommandTests
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TodoItemsDomainErrors.NotFound);
+        result.Error.Should().Be(TodoItemsErrors.NotFound);
     }
 
 
@@ -82,7 +82,7 @@ public class DeleteTodoItemCommandTests
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TodoItemsDomainErrors.NoRowsAffected);
+        result.Error.Should().Be(TodoItemsErrors.NoRowsAffected);
     }
 
     [Fact]
@@ -106,6 +106,6 @@ public class DeleteTodoItemCommandTests
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TodoItemsDomainErrors.NoRowsAffected);
+        result.Error.Should().Be(TodoItemsErrors.NoRowsAffected);
     }
 }

@@ -66,7 +66,7 @@ public class CompleteTodoItemCommandTests
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TodoItemsDomainErrors.NotFound);
+        result.Error.Should().Be(TodoItemsErrors.NotFound);
     }
     [Fact]
     public async Task Handle_Should_ReturnFailure_WhenTodoItemIsAlreadyCompleted()
@@ -85,7 +85,7 @@ public class CompleteTodoItemCommandTests
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TodoItemsDomainErrors.AlreadyCompleted);
+        result.Error.Should().Be(TodoItemsErrors.AlreadyCompleted);
     }
 
 
@@ -109,7 +109,7 @@ public class CompleteTodoItemCommandTests
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TodoItemsDomainErrors.NoRowsAffected);
+        result.Error.Should().Be(TodoItemsErrors.NoRowsAffected);
     }
 
     [Fact]
@@ -136,6 +136,6 @@ public class CompleteTodoItemCommandTests
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TodoItemsDomainErrors.NoRowsAffected);
+        result.Error.Should().Be(TodoItemsErrors.NoRowsAffected);
     }
 }

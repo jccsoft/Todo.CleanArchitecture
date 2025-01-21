@@ -36,8 +36,8 @@ public class AddTodoItemTests(FunctionalTestWebAppFactory factory) : BaseFunctio
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
         CustomProblemDetails problemDetails = await response.GetProblemDetails();
-        problemDetails.Title = TodoItemsDomainErrors.MissingTitle.Code;
-        problemDetails.Detail = TodoItemsDomainErrors.MissingTitle.Description;
+        problemDetails.Title = TodoItemsErrors.MissingTitle.Code;
+        problemDetails.Detail = TodoItemsErrors.MissingTitle.Description;
     }
 
 }

@@ -27,7 +27,7 @@ public sealed class TodoItem : Entity
 
     public Result Complete(DateTime utcNow)
     {
-        if (CompletedOnUtc is not null) return Result.Failure(TodoItemsDomainErrors.AlreadyCompleted);
+        if (CompletedOnUtc is not null) return Result.Failure(TodoItemsErrors.AlreadyCompleted);
 
         CompletedOnUtc = utcNow;
 

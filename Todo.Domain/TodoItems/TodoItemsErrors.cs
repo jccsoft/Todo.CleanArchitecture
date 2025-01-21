@@ -1,6 +1,6 @@
 ﻿namespace Todo.Domain.TodoItems;
 
-public static class TodoItemsDomainErrors
+public static class TodoItemsErrors
 {
     public static readonly Error NotFound = Error.NotFound("TodoItem.NotFound", "Todo item not found");
     public static readonly Error MissingTitle = Error.Validation("TodoItem.MissingTitle", "Title can't be empty");
