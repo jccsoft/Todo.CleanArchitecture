@@ -21,17 +21,30 @@ Todo app based on Milan Jovanovic's course 'Pragmatic Clean Architecture' at htt
 
 ### Project WebApi:
 - Endpoints: sending requests, through the mediator pipeline, for every action (add, complete, delete, getall, getbyid)
-- Infrastructure: CustomResults (helper for endpoints's result) and GlobalExceptionHandler.
-- Middleware: RequestContextLoggingMiddleware (adds CorrelationId property to logging)
-- OpenApi: ConfigureSwaggerGenOptions
+- Infrastructure:
+    - CustomResults: helper for endpoints's result
+    - GlobalExceptionHandler
+- Middleware:
+    - RequestContextLoggingMiddleware: adds 'CorrelationId' property to logging.
+- OpenApi:
+    - ConfigureSwaggerGenOptions
 
 ### Project Infrastructure:
-- Caching: CacheOptions (common expiration time), InMemoryCacheService, RedisCacheService
-- Database: DbConnectionFactory (mysql or postgres), UnitOfWork (transactions in commands) and sql mappers for dapper (DataOnly and TodoItemTitle)
-- Outbox: classes for Outbox pattern
+- Caching:
+    - CacheOptions: common expiration time
+    - InMemoryCacheService
+    - RedisCacheService.
+- Database:
+    - DbConnectionFactory: mysql or postgres
+    - UnitOfWork: transactions in commands
+    - Sql mappers for dapper (DataOnly and TodoItemTitle)
+- Outbox: classes for Outbox pattern.
 - Repositories: implementation of Domain.ITodoItemsRepository
-- Setup / Config: configuration of CacheType (In-Memory / Redis), ORM (Dapper / EF Core) and DatabaseType (MySql or Postgres)
-- Time: implementation of SharedKernel.IDateTimeProvider
+- Setup / Config:
+    - CacheType: In-Memory / Redis
+    - ORM: Dapper / EF Core
+    - DatabaseType: MySql or Postgres
+- Time: implementation of SharedKernel.IDateTimeProvider.
 
 ### Project Application:
 - Classes for adding behaviors to the pipeline of MediatR: querycaching, requestlogging, validation.
@@ -57,10 +70,10 @@ Todo app based on Milan Jovanovic's course 'Pragmatic Clean Architecture' at htt
 - ArchitectureTests
 
 ### Getting Started:
-- Choose cache, database and ORM at Infrastructure/Setup/Config
+- Choose cache, database and ORM at Infrastructure/Setup/Config.
 - Comment/Uncomment the db section of docker-compose based on the chosen database.
-- The scripts for initializing the database are init-mysql.sql and init-postgres.sql
-- In visual studio, select docker-compose as Startup Item
+- The scripts for initializing the database are init-mysql.sql and init-postgres.sql.
+- In visual studio, select docker-compose as Startup Item.
 
 ### Testing:
 - Uses docker containers based on Infrastructure/Setup/Config
