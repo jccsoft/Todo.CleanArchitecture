@@ -75,7 +75,7 @@ public static class DependencyInjection
             services.AddMemoryCache();
             services.AddSingleton<ICacheService, InMemoryCacheService>();
         }
-        else if (Config.IsCacheRedis && string.IsNullOrEmpty(cacheConnectionString) == false)
+        else if (Config.IsCacheRedis && !string.IsNullOrEmpty(cacheConnectionString))
         {
             services.AddStackExchangeRedisCache(options => options.Configuration = cacheConnectionString);
             services.AddSingleton<ICacheService, RedisCacheService>();

@@ -21,11 +21,11 @@ internal sealed class UnitOfWork : IUnitOfWork
         _outboxRepository = outboxRepository;
     }
 
-    public async Task<int> SaveChangesAsync(List<Entity>? entities = default, CancellationToken cancellationToken = default)
+    public async Task<int> SaveChangesAsync(List<Entity>? modifiedEntities = default, CancellationToken cancellationToken = default)
     {
         try
         {
-            bool success = await AddDomainEventsAsOutboxMessages(entities);
+            bool success = await AddDomainEventsAsOutboxMessages(modifiedEntities);
 
             if (success)
                 _dbTransaction.Commit();

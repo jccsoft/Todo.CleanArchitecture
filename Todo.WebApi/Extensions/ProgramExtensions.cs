@@ -16,7 +16,7 @@ public static class ProgramExtensions
 
     private static string GetDbConnectionString(this WebApplicationBuilder builder) =>
         builder.Environment.IsDevelopment() ?
-        builder.Configuration.GetConnectionString(Config.IsDbMySQL ? "MySQL" : "PostgreSQL") ?? "" :
+        builder.Configuration.GetConnectionString(Config.DbConnectionStringName) ?? "" :
         (Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb") ?? "").Replace(":", ";port=").Replace("localdb", "tododb");
 
     private static string GetCacheConnectionString(this WebApplicationBuilder builder) =>

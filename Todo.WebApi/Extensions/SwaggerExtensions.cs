@@ -12,12 +12,11 @@ public static class SwaggerExtensions
         {
             IReadOnlyList<ApiVersionDescription> descriptions = app.DescribeApiVersions();
 
-            foreach (ApiVersionDescription description in descriptions)
+            foreach (string groupName in descriptions.Select(description => description.GroupName))
             {
-                string url = $"/swagger/{description.GroupName}/swagger.json";
-                string name = description.GroupName.ToUpperInvariant();
-
-                options.SwaggerEndpoint(url, name);
+                options.SwaggerEndpoint(
+                    $"/swagger/{groupName}/swagger.json",
+                    groupName.ToUpperInvariant());
             }
 
             options.DefaultModelsExpandDepth(0); // schemas section collapsed

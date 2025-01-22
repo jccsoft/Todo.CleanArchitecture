@@ -9,6 +9,7 @@ public static class Config
 
     public static bool IsDbMySQL => _databaseType == DatabaseTypes.MySQL;
     public static bool IsDbPostgreSQL => _databaseType == DatabaseTypes.PostgreSQL;
+    public static string DbConnectionStringName => IsDbMySQL ? "MySQL" : "PostgreSQL";
 
     public static bool IsOrmDapper => _ormType == ORMTypes.Dapper;
     public static bool IsOrmEFCore => _ormType == ORMTypes.EFCore;

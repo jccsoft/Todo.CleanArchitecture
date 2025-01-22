@@ -1,6 +1,6 @@
 ﻿namespace Todo.WebApi.FunctionalTests.TodoItems;
 
-internal class TodoItemData
+internal static class TodoItemData
 {
     public static readonly string BaseUrl = "api/v1/todoitems";
     public static readonly string BaseUrlComplete = $"{BaseUrl}/complete";

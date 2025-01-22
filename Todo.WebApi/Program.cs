@@ -40,10 +40,11 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-//app.MapControllers();
 
 await app.RunAsync();
 
 
 // Required for functional and integration tests to work.
+#pragma warning disable S1118 // Utility classes should not have public constructors
 public partial class Program;
+#pragma warning restore S1118 // Utility classes should not have public constructors

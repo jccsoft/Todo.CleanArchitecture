@@ -19,7 +19,7 @@ internal class AppDbContext(DbContextOptions<AppDbContext> options,
         modelBuilder.HasDefaultSchema(Schemas.Default);
     }
 
-    public async Task<int> SaveChangesAsync(List<Entity>? entities = null, CancellationToken cancellationToken = default)
+    public async Task<int> SaveChangesAsync(List<Entity>? modifiedEntities = null, CancellationToken cancellationToken = default)
     {
         bool success = await AddDomainEventsAsOutboxMessages();
         if (success == false) return 0;

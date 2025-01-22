@@ -7,11 +7,12 @@ public static class Ensure
 {
     public static void NotNullOrEmpty(
         [NotNull] string? value,
-        [CallerArgumentExpression(nameof(value))] string? paramName = default)
+        [CallerMemberName] string memberName = "",
+        [CallerArgumentExpression(nameof(value))] string paramName = "")
     {
         if (string.IsNullOrEmpty(value))
         {
-            throw new ArgumentNullException(paramName);
+            throw new ArgumentNullException(paramName, memberName);
         }
     }
 

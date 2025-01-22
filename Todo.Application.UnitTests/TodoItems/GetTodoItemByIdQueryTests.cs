@@ -8,7 +8,7 @@ namespace Todo.Application.UnitTests.TodoItems;
 public class GetTodoItemByIdQueryTests
 {
     private readonly TodoItem _todoItem = TodoItemData.Create();
-    private GetTodoItemByIdQuery _query;
+    private readonly GetTodoItemByIdQuery _query;
 
     private readonly GetTodoItemByIdQueryHandler _handler;
     private readonly ITodoItemsRepository _todoItemsRepositoryMock;

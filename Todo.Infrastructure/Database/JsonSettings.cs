@@ -4,5 +4,5 @@ namespace Todo.Infrastructure.Database;
 
 internal static class JsonSettings
 {
-    public static JsonSerializerSettings SerializerSettings = new() { TypeNameHandling = TypeNameHandling.All };
+    public static readonly JsonSerializerSettings SerializerSettings = new() { TypeNameHandling = TypeNameHandling.All };
 }

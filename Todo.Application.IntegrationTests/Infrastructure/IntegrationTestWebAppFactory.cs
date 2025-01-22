@@ -27,7 +27,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
         builder.ConfigureTestServices(services =>
         {
-            services.RemoveAll(typeof(IDbConnectionFactory));
+            services.RemoveAll<IDbConnectionFactory>();
 
             string connectionString = _mySqlContainer is not null ?
                 _mySqlContainer.GetConnectionString() :
@@ -38,7 +38,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
             if (Config.IsOrmEFCore)
             {
-                services.RemoveAll(typeof(DbContextOptions<AppDbContext>));
+                services.RemoveAll<DbContextOptions<AppDbContext>>();
 
                 var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
                 if (Config.IsDbMySQL)
@@ -52,7 +52,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
             if (_redisContainer is not null)
             {
-                services.RemoveAll(typeof(RedisCacheOptions));
+                services.RemoveAll<RedisCacheOptions>();
                 services.AddStackExchangeRedisCache(redisCacheOptions =>
                     redisCacheOptions.Configuration = _redisContainer.GetConnectionString());
             }

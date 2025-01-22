@@ -1,5 +1,5 @@
 ﻿namespace Todo.Application.IntegrationTests.TodoItems;
-internal class TodoItemData
+internal static class TodoItemData
 {
     public static readonly Guid Sample1Id = new("7db5edbf-ddd5-416d-9724-16600672733d"); // Sample 1 - init-db.sql
     public static readonly Guid Sample2Id = new("2631a5b0-4779-4a8a-9caf-25792fe37c17"); // Sample 2

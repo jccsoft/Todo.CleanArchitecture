@@ -27,7 +27,15 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
 
     public void Dispose()
     {
-        _scope.Dispose();
+        Dispose(true);
         GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _scope.Dispose();
+        }
     }
 }

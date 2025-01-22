@@ -51,7 +51,7 @@ internal sealed class ValidationPipelineBehavior<TRequest, TResponse>(
 
     private async Task<ValidationFailure[]> ValidateAsync(TRequest request)
     {
-        if (!validators.Any())
+        if (validators.Any() is false)
         {
             return [];
         }
