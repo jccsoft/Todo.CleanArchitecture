@@ -28,7 +28,7 @@ public class GetAllTodoItemsQueryTests
     {
         // Arrange
         _todoItemsRepositoryMock
-            .GetAllAsync(Arg.Any<bool>(), Arg.Any<CancellationToken>())
+            .GetAllAsync(Arg.Any<bool?>(), Arg.Any<CancellationToken>())
             .Returns(_todoItems);
 
         // Act

@@ -1,13 +1,14 @@
-﻿using Todo.Application.TodoItems.GetAll;
+﻿using Microsoft.AspNetCore.Mvc;
+using Todo.Application.TodoItems.GetAll;
 
-namespace Todo.WebApi.Endpoints.TodoItems.GetAll;
+namespace Todo.WebApi.Endpoints.TodoItems;
 
 public class GetAllTodoItems() : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet(BaseUrls.TodoItems, async (
-            bool includeCompleted,
+            [FromQuery(Name = "includecompleted")] bool? includeCompleted,
             ISender sender,
             CancellationToken cancellationToken) =>
         {

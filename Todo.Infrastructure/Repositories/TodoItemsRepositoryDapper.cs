@@ -9,7 +9,7 @@ internal sealed class TodoItemsRepositoryDapper(IDbConnectionFactory dbConnectio
 {
     private readonly IDbConnection _dbConnection = dbConnectionFactory.GetOpenConnection();
 
-    public async Task<List<TodoItem>> GetAllAsync(bool includeCompleted = false, CancellationToken cancellationToken = default)
+    public async Task<List<TodoItem>> GetAllAsync(bool? includeCompleted = false, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -66,7 +66,7 @@ internal sealed class TodoItemsRepositoryDapper(IDbConnectionFactory dbConnectio
     }
 
 
-    public async Task<int> AddAsync(TodoItem item, CancellationToken cancellationToken = default)
+    public async Task<int> CreateAsync(TodoItem item, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -89,7 +89,7 @@ internal sealed class TodoItemsRepositoryDapper(IDbConnectionFactory dbConnectio
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, nameof(AddAsync));
+            logger.LogError(ex, nameof(CreateAsync));
             return 0;
         }
     }

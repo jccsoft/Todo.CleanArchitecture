@@ -1,6 +1,6 @@
 ﻿using Todo.Application.TodoItems.Delete;
 
-namespace Todo.WebApi.Endpoints.TodoItems.Delete;
+namespace Todo.WebApi.Endpoints.TodoItems;
 
 public class DeleteTodoItem : IEndpoint
 {

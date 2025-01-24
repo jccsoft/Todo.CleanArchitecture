@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using Todo.Domain.TodoItems;
-using Todo.WebApi.Endpoints.TodoItems.Complete;
 using Todo.WebApi.FunctionalTests.Contracts;
 using Todo.WebApi.FunctionalTests.Extensions;
 using Todo.WebApi.FunctionalTests.Infrastructure;
@@ -10,16 +9,14 @@ namespace Todo.WebApi.FunctionalTests.TodoItems;
 
 public class CompleteTodoItemTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
 {
-    private readonly string _baseUrl = $"{TodoItemData.BaseUrl}/complete";
-
     [Fact]
     public async Task Should_ReturnNoContent_WhenRequestIsValid()
     {
         // Arrange
-        var request = new CompleteTodoItemRequest(TodoItemData.Sample1Id);
+        string requestUri = $"{TodoItemData.BaseUrl}/{TodoItemData.Sample1Id}/complete";
 
         // Act
-        HttpResponseMessage response = await HttpClient.PatchAsJsonAsync(_baseUrl, request);
+        HttpResponseMessage response = await HttpClient.PatchAsJsonAsync(requestUri, new { });
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
@@ -29,10 +26,10 @@ public class CompleteTodoItemTests(FunctionalTestWebAppFactory factory) : BaseFu
     public async Task Should_ReturnNotFound_WhenTodoItemDoesntExist()
     {
         // Arrange
-        var request = new CompleteTodoItemRequest(Guid.NewGuid());
+        string requestUri = $"{TodoItemData.BaseUrl}/{Guid.NewGuid()}/complete";
 
         // Act
-        HttpResponseMessage response = await HttpClient.PatchAsJsonAsync(_baseUrl, request);
+        HttpResponseMessage response = await HttpClient.PatchAsJsonAsync(requestUri, new { });
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -48,11 +45,11 @@ public class CompleteTodoItemTests(FunctionalTestWebAppFactory factory) : BaseFu
     public async Task Should_ReturnBadRequest_WhenTodoItemIsAlreadyComplete()
     {
         // Arrange
-        var request = new CompleteTodoItemRequest(TodoItemData.Sample2Id);
+        string requestUri = $"{TodoItemData.BaseUrl}/{TodoItemData.Sample2Id}/complete";
 
         // Act
-        _ = await HttpClient.PatchAsJsonAsync(_baseUrl, request);
-        HttpResponseMessage response = await HttpClient.PatchAsJsonAsync(_baseUrl, request);
+        _ = await HttpClient.PatchAsJsonAsync(requestUri, new { });
+        HttpResponseMessage response = await HttpClient.PatchAsJsonAsync(requestUri, new { });
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);

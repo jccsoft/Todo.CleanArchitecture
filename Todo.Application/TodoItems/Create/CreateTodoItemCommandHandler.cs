@@ -1,18 +1,18 @@
-﻿namespace Todo.Application.TodoItems.Add;
+﻿namespace Todo.Application.TodoItems.Create;
 
-internal sealed class AddTodoItemCommandHandler(
+internal sealed class CreateTodoItemCommandHandler(
     ITodoItemsRepository todoItemsRepository,
     IUnitOfWork unitOfWork,
-    IDateTimeProvider dateTimeProvider) : ICommandHandler<AddTodoItemCommand, Guid>
+    IDateTimeProvider dateTimeProvider) : ICommandHandler<CreateTodoItemCommand, Guid>
 {
-    public async Task<Result<Guid>> Handle(AddTodoItemCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CreateTodoItemCommand request, CancellationToken cancellationToken)
     {
         try
         {
             var title = new TodoItemTitle(request.Title);
             var todoItem = TodoItem.Create(title, dateTimeProvider.UtcNow);
 
-            int affectedRows = await todoItemsRepository.AddAsync(todoItem, cancellationToken);
+            int affectedRows = await todoItemsRepository.CreateAsync(todoItem, cancellationToken);
             if (affectedRows == 0) return Result.Failure<Guid>(TodoItemsErrors.NoRowsAffected);
 
             int saveChangesResult = await unitOfWork.SaveChangesAsync([todoItem], cancellationToken);

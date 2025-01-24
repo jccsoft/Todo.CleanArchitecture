@@ -1,12 +1,14 @@
-﻿namespace Todo.Application.IntegrationTests.TodoItems;
+﻿using Todo.Application.TodoItems.Create;
 
-public class AddTodoItemTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
+namespace Todo.Application.IntegrationTests.TodoItems;
+
+public class CreateTodoItemTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
 {
     [Fact]
     public async Task Handle_Should_AddTodoItemToDatabase_WhenCommandIsValid()
     {
         // Arrange
-        AddTodoItemCommand command = new(TodoItemData.Title.Value);
+        CreateTodoItemCommand command = new(TodoItemData.Title.Value);
 
         // Act
         Result<Guid> result = await Sender.Send(command);

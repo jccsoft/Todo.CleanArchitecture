@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using NSubstitute;
 using Todo.Application.Abstractions.Data;
-using Todo.Application.TodoItems.Add;
+using Todo.Application.TodoItems.Create;
 using Todo.Domain.TodoItems;
 using Todo.SharedKernel;
 
@@ -9,9 +9,9 @@ namespace Todo.Application.UnitTests.TodoItems;
 
 public class AddTodoItemCommandTests
 {
-    private static readonly AddTodoItemCommand _command = new(TodoItemData.Title.Value);
+    private static readonly CreateTodoItemCommand _command = new(TodoItemData.Title.Value);
 
-    private readonly AddTodoItemCommandHandler _handler;
+    private readonly CreateTodoItemCommandHandler _handler;
     private readonly ITodoItemsRepository _todoItemsRepositoryMock;
     private readonly IUnitOfWork _unitOfWorkMock;
 
@@ -23,7 +23,7 @@ public class AddTodoItemCommandTests
         IDateTimeProvider dateTimeProviderMock = Substitute.For<IDateTimeProvider>();
         dateTimeProviderMock.UtcNow.Returns(TodoItemData.CreatedOnUtc);
 
-        _handler = new AddTodoItemCommandHandler(_todoItemsRepositoryMock, _unitOfWorkMock, dateTimeProviderMock);
+        _handler = new CreateTodoItemCommandHandler(_todoItemsRepositoryMock, _unitOfWorkMock, dateTimeProviderMock);
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public class AddTodoItemCommandTests
     {
         // Arrange
         _todoItemsRepositoryMock
-            .AddAsync(Arg.Is<TodoItem>(t => t.Title!.Value == _command.Title),
+            .CreateAsync(Arg.Is<TodoItem>(t => t.Title!.Value == _command.Title),
                       Arg.Any<CancellationToken>())
             .Returns(1);
 
@@ -52,7 +52,7 @@ public class AddTodoItemCommandTests
     public async Task Handle_Should_ReturnFailure_WhenTitleEmpty()
     {
         // Arrange
-        var emptyCommand = new AddTodoItemCommand("");
+        var emptyCommand = new CreateTodoItemCommand("");
 
         // Act
         var result = await _handler.Handle(emptyCommand, default);
@@ -69,7 +69,7 @@ public class AddTodoItemCommandTests
         var todoItem = TodoItemData.Create();
 
         _todoItemsRepositoryMock
-            .AddAsync(todoItem, Arg.Any<CancellationToken>())
+            .CreateAsync(todoItem, Arg.Any<CancellationToken>())
             .Returns(0);
 
         // Act
@@ -87,7 +87,7 @@ public class AddTodoItemCommandTests
         var todoItem = TodoItemData.Create();
 
         _todoItemsRepositoryMock
-            .AddAsync(todoItem, Arg.Any<CancellationToken>())
+            .CreateAsync(todoItem, Arg.Any<CancellationToken>())
             .Returns(1);
 
         _unitOfWorkMock

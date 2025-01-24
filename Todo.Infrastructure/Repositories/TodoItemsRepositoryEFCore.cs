@@ -6,14 +6,14 @@ namespace Todo.Infrastructure.Repositories;
 
 internal sealed class TodoItemsRepositoryEFCore(AppDbContext dbContext, ILogger<TodoItemsRepositoryEFCore> logger) : ITodoItemsRepository
 {
-    public async Task<List<TodoItem>> GetAllAsync(bool includeCompleted = false, CancellationToken cancellationToken = default)
+    public async Task<List<TodoItem>> GetAllAsync(bool? includeCompleted = false, CancellationToken cancellationToken = default)
     {
         try
         {
             var todoItems = await dbContext.TodoItems
-                .AsNoTracking()
-                .Where(t => t.CompletedOnUtc == null || includeCompleted)
-                .ToListAsync(cancellationToken);
+            .AsNoTracking()
+            .Where(t => t.CompletedOnUtc == null || (includeCompleted ?? false))
+            .ToListAsync(cancellationToken);
 
             return todoItems;
         }
@@ -40,7 +40,7 @@ internal sealed class TodoItemsRepositoryEFCore(AppDbContext dbContext, ILogger<
     }
 
 
-    public Task<int> AddAsync(TodoItem item, CancellationToken cancellationToken = default)
+    public Task<int> CreateAsync(TodoItem item, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -50,7 +50,7 @@ internal sealed class TodoItemsRepositoryEFCore(AppDbContext dbContext, ILogger<
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, nameof(AddAsync));
+            logger.LogError(ex, nameof(CreateAsync));
             return Task.FromResult(0);
         }
     }
